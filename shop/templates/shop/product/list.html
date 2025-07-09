@@ -1,4 +1,4 @@
-{% extends "shop/base.html" %}
+{% extends 'base.html' %}
 {% load static %}
 
 {% block title %}
@@ -21,6 +21,7 @@
   </div>
   <div id="main" class="product-list">
     <h1>{% if category %}{{ category.name }}{% else %}Products{% endif %}</h1>
+    {% if products %}
     {% for product in products %}
       <div class="item">
         <a href="{{ product.get_absolute_url }}">
@@ -31,5 +32,8 @@
         ${{ product.price }}
       </div>
     {% endfor %}
+    {% else %}
+      <h5>No Products Available</h5>
+    {% endif %}
   </div>
 {% endblock %}

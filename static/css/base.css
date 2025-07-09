@@ -189,8 +189,17 @@ ul.errorlist {
 #main {
     float: left;
     width: 96%;
+    margin-top: 93px;
     margin-right: -220px;
     overflow: hidden;
+}
+
+.top-m {
+    margin-top: 93px;
+}
+
+.index-header {
+    background-color: #77b6e2;
 }
 
 .product-list .item {
@@ -208,6 +217,7 @@ ul.errorlist {
 
 .product-detail {
     text-align: justify;
+    margin-top: 93px;
 }
 
 .product-detail .price {

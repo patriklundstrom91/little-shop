@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Category, Product, ProductVariant, Tag, ProductTag
+from .models import Category, Product, ProductVariant, Tag, ProductTag, Review
 
 # Register your models here.
 
@@ -52,3 +52,12 @@ class ProductTagAdmin(admin.ModelAdmin):
         'tag'
     ]
 
+
+@admin.register(Review)
+class ReviewAdmin(admin.ModelAdmin):
+    list_display = [
+        'product',
+        'user',
+        'rating',
+        'created'
+    ]
