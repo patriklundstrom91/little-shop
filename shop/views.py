@@ -34,7 +34,7 @@ def product_detail(request, id, slug):
     reviews = Review.objects.filter(product=product.id, published=True)
     review_count = reviews.count()
     if review_count:
-        avg_rating = sum([r.rating for r in reviews]) / review_count
+        avg_rating = sum([r.rating + 1 for r in reviews]) / review_count
     else:
         avg_rating = None
     review_summary = {

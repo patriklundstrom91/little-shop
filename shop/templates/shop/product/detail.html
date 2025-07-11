@@ -6,7 +6,67 @@
 {% endblock %}
 
 {% block content %}
-    <div class="product-detail">
-        Product detail page
+    <div class="product-detail container-fluid">
+        <div class="row">
+            <div class="col-12 col-md-6 col-lg-4 offset-lg-2">
+                <div class="image-container my-5">
+                    <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static "img/noimage.png" %}{% endif %}" alt="{{ product.name }}" class="">
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="details-container mb-5 mt-md-5">
+                    <h3 class="mb-0">{{ product.name }}</h3>
+                    <div class="mt-2">
+                       {% if avg_rating %}
+                            <div>
+                                {% for i in "12345" %}
+                                {% if avg_rating|floatformat:1 >= i %}
+                                    <i class="fas fa-star text-warning"></i>
+                                {% elif avg_rating|floatformat:1 >= i|add:"-0.5" %}
+                                    <i class="fas fa-star-half-alt text-warning"></i>
+                                {% else %}
+                                    <i class="far fa-star text-warning"></i>
+                                {% endif %}
+                                {% endfor %}
+                                <span>({{ avg_rating|floatformat:1 }} / 5.0, {{ review_count }} reviews)</span>
+                            </div>
+                        {% else %}
+                            <div>No reviews yet.</div>
+                        {% endif %}
+                    </div>
+                    <p class="mt-2">{{ product.description }}</p>
+                    {% if product.category %}
+                        <small class="text-muted"><i class="fas fa-tag mr-1"></i>{{ product.category.name }}</small>
+                    {% endif %}
+                    {% if variants %}
+                        <form method="POST" action="" class="form mt-2">
+                            {% csrf_token %}
+                            <label for="variant">Choose size:</label>
+                            <select name="variant" id="variant-select" required>
+                                <option value="">--Select size--</option>
+                                {% for variant in variants %}
+                                    <option value="{{ variant.id }}" data-stock="{{ variant.stock }}" data-sku="{{ variant.sku }}">{{ variant.size }}</option>
+                                {% endfor %}
+                            </select>
+                            
+                        </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
     </div>
 {% endblock %}
+
+<!--code for showing stars in individual reviews-->
+{% for review in reviews %}
+  <div>
+    {% for i in "12345" %}
+      {% if review.rating|add:"1" >= i|add:"0" %}
+        <i class="fas fa-star text-warning"></i>
+      {% else %}
+        <i class="far fa-star text-warning"></i>
+      {% endif %}
+    {% endfor %}
+    <span>{{ review.comment }}</span>
+  </div>
+{% endfor %}

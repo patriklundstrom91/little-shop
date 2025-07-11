@@ -137,6 +137,10 @@ ul.errorlist {
     overflow: auto;
 }
 
+#banner p {
+    margin-bottom: 0;
+}
+
 #header .logo {
     font-family: 'Ubuntu', sans-serif;
     float: left;
