@@ -1,0 +1,89 @@
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const select = document.getElementById('variant-select');
+    const stockMessage = document.getElementById('stock-message');
+    const addToBag = document.getElementById('add-to-bag');
+    const qtyInput = document.getElementById('id-qty');
+    const decrementBtn = document.getElementById('decrement-qty');
+    const incrementBtn = document.getElementById('increment-qty');
+    const qty = document.getElementById('qty');
+
+    function updateControls() {
+        const selectedOption = select.options[select.selectedIndex];
+        const stock = parseInt(selectedOption.getAttribute('data-stock'), 10);
+
+        if (!select.value) {
+            qtyInput.disabled = true;
+            decrementBtn.disabled = true;
+            incrementBtn.disabled = true;
+            stockMessage.textContent = '';
+            addToBag.disabled = true;
+            qty.className = `col-12 d-none`; 
+            return;
+        }
+        qtyInput.disabled = false;
+        qtyInput.max = stock;
+        addToBag.disabled = false;
+
+        if (stock > 0) {
+            stockMessage.textContent = `In stock: ${stock}`;
+            stockMessage.className = `text-black`;
+            decrementBtn.disabled = (qtyInput.value <= 1);
+            incrementBtn.disabled = (qtyInput.value >= stock);
+            qty.className = `col-12 d-block`;
+            addToBag.className = `btn btn-primary mt-2`;
+            qtyInput.value = 1; // Only reset on variant change
+        } else {
+            decrementBtn.disabled = true;
+            incrementBtn.disabled = true;
+            qtyInput.disabled = true;
+            stockMessage.textContent = `Out of stock`;
+            stockMessage.className = `text-danger`;
+            addToBag.disabled = true;
+            qty.className = `col-12 d-none`;
+            addToBag.className = `btn btn-primary mt-2 d-none`;
+        }
+    }
+
+    function updateButtonStates() {
+        let current = parseInt(qtyInput.value, 10);
+        let max = parseInt(qtyInput.max, 10);
+        decrementBtn.disabled = (current <= 1);
+        incrementBtn.disabled = (current >= max);
+    }
+
+
+    select.addEventListener('change', function() {
+        qtyInput.value = 1;
+        updateControls();
+    });
+
+    decrementBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        let current = parseInt(qtyInput.value, 10);
+        if (current > 1) {
+            qtyInput.value = current - 1;
+            updateButtonStates();
+        }
+    });
+
+    incrementBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        let current = parseInt(qtyInput.value, 10);
+        let max = parseInt(qtyInput.max, 10);
+        if (current < max) {
+            qtyInput.value = current + 1;
+            updateButtonStates();
+        }
+    });
+
+    qtyInput.addEventListener('input', function() {
+        let current = parseInt(qtyInput.value, 10);
+        let max = parseInt(qtyInput.max, 10);
+        updateButtonStates();
+    });
+
+    // Initial state
+    updateControls();
+});
+</script>

@@ -97,8 +97,8 @@ class Review(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE,
                                 related_name='reviews')
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    subject = models.CharField(max_length=200)
-    review = models.TextField()
+    subject = models.CharField(max_length=200, blank=True, null=True)
+    review = models.TextField(blank=True, null=True)
     rating = models.IntegerField(choices=RATING, default=4)
     published = models.BooleanField(default=True)
     created = models.DateTimeField(auto_now_add=True)
