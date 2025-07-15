@@ -1,5 +1,10 @@
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, render, redirect
+from django.contrib import messages
 from .models import Category, Product, ProductVariant, Tag, ProductTag, Review
+from bag.forms import AddToBagForm
+from bag.models import BagItem
+from bag.utils import get_bag_filter
+
 # Create your views here.
 
 
@@ -26,11 +31,36 @@ def product_detail(request, id, slug):
         Product, id=id, slug=slug, active=True
     )
     variants = product.variants.filter(active=True)
+    
+    # Handle GET variant
     selected_variant = None
     variant_id = request.GET.get('variant')
     if variant_id:
         selected_variant = get_object_or_404(ProductVariant,
                                              pk=variant_id, product=product)
+    # Handle POST add to bag    
+    form = AddToBagForm(product=product, data=request.POST or None)
+
+    if request.method == 'POST' and form.is_valid():
+        variant = form.cleaned_data['variant']
+        quantity = form.cleaned_data['quantity']
+        selected_variant = variant
+        bag_filter = get_bag_filter(request)
+        bag_item, created = BagItem.objects.get_or_create(
+            variant=variant,
+            defaults={'quantity': quantity},
+            **bag_filter
+        )
+        if not created:
+            bag_item.quantity += quantity
+            bag_item.save()
+        messages.success(
+            request,
+            f'{variant.product.name} ({variant.size}) added to your bag.'
+        )
+        return redirect('bag:view_bag')
+    
+    # Handle reviews and rating
     reviews = Review.objects.filter(product=product.id, published=True)
     review_count = reviews.count()
     if review_count:
@@ -55,5 +85,6 @@ def product_detail(request, id, slug):
          'review_count': review_count,
          'avg_rating': avg_rating,
          'review_summary': review_summary,
+         'form': form,
          }
     )

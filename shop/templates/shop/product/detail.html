@@ -44,7 +44,7 @@
                             <label for="variant">Choose size:</label>
                             <select name="variant" id="variant-select" required>
                                 {% for variant in variants %}
-                                    <option value="{{ variant.id }}" data-stock="{{ variant.stock }}" data-sku="{{ variant.sku }}">{{ variant.size }}</option>
+                                    <option value="{{ variant.id }}" data-stock="{{ variant.stock }}" data-sku="{{ variant.sku }}" {% if selected_variant and selected_variant.id == variant.id %}selected{% endif %}>{{ variant.size }}</option>
                                 {% endfor %}
                             </select>
                             <div id="stock-info" class="mt-2">
