@@ -1,10 +1,83 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load bag_extras %}
 
 {% block title %}
     Little'n - Bag
 {% endblock %}
 
 {% block content %}
-    <h1 class="top-m">Shopping Bag</h1>
+    <div class="container py-4">
+    <h1 class="mb-4 text-center">Shopping Bag</h1>
+    <!-- Bag items-->
+    {% if bag_items %}
+        <div class="table-responsive mb-4">
+            <table class="table table-bordered align-middle text-center">
+                <thead class="table-light">
+                    <tr>
+                        <th>Image</th>
+                        <th>Product</th>
+                        <th>Size</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in bag_items %}
+                    <tr>
+                        <td>
+                            <img src="{% if item.variant.product.image %}{{ item.variant.product.image.url }}{% else %}{% static "img/noimage.png" %}{% endif %}" alt="{{ item.variant.product.name }}" class="img-fluid rounded bag-img">
+                        </td>
+                        <td class="text-start">{{ item.variant.product.name }}</td>
+                        <td>{{ item.variant.size }}</td>
+                        <td>£{{ item.variant.price }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>£{{ item.variant.price|mul:item.quantity }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Order summary and checkout button -->
+        <div class="row justify-content-end">
+            <div class="col-md-6 col-lg-4">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title text-center">Order Summary</h5>
+                        <ul class="list-group list-group-flush mb-3">
+                            <li class="list-group-item d-flex justify-content-between">
+                                <span>Subtotal:</span>
+                                <strong>£{{ bag_subtotal }}</strong>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between">
+                                <span>Delivery:</span>
+                                <strong>£{{ bag_delivery }}</strong>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between fs-5">
+                                <span>Grand Total:</span>
+                                <strong class="text-success">£{{ bag_grand_total }}</strong>
+                            </li>
+                        </ul>
+                        <div class="d-grid">
+                            <a href="{% url 'orders:checkout' %}" class="btn btn-success btn-lg">
+                                Proceed to Checkout
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <div class="alert alert-info text-center" role="alert">
+            Your bag is currently empty.
+        </div>
+        <div class="text-center mt-3">
+            <a href="{% url 'product_list' %}" class="btn btn-primary">
+                Continue Shopping
+            </a>
+        </div>
+    {% endif %}
+</div>
 {% endblock %}

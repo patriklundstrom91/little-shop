@@ -198,6 +198,11 @@ ul.errorlist {
     overflow: hidden;
 }
 
+.bag-img {
+    max-width: 80px;
+    max-height: 80px;
+}
+
 .top-m {
     margin-top: 93px;
 }

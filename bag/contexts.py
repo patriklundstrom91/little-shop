@@ -7,7 +7,9 @@ from .utils import get_bag_filter
 def bag_contents(request):
     bag_items = BagItem.objects.filter(**get_bag_filter(request))
 
-    subtotal = sum(item.variant.price * item.quantity for item in bag_items)
+    subtotal = sum(
+        item.variant.product.price * item.quantity for item in bag_items
+    )
     if subtotal < settings.FREE_DELIVERY_THRESHOLD:
         delivery = subtotal * Decimal(
             settings.STANDARD_DELIVERY_PERCENTAGE / 100

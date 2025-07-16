@@ -2,8 +2,8 @@ from django.contrib import admin
 from django.urls import path
 from . import views
 
-app_name = 'bag'
+app_name = 'profiles'
 
 urlpatterns = [
-    path('', views.view_bag, name='view_bag'),
+    path('', views.profile, name='profile'),
 ]

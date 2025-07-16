@@ -98,9 +98,14 @@
     {% endblock %}
 
     {% block postloadjs %}
-    <script type="text/javascript">
-        $('.toast').toast('show');
-    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const toasts = document.querySelectorAll('.toast');
+            toasts.forEach(toast => {
+                new bootstrap.Toast(toast, { delay: 4000 }).show();
+            });
+        });
+</script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous"></script>
     <script src="https://kit.fontawesome.com/ba33d00b7b.js" crossorigin="anonymous"></script>
     {% endblock %}
