@@ -2,7 +2,8 @@ import stripe
 import json
 from decimal import Decimal
 from django.conf import settings
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
+from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.http import HttpResponse, JsonResponse
@@ -19,11 +20,18 @@ from django.core.mail import send_mail
 # Create your views here.
 
 
+def checkout_view(request):
+    form = OrderForm(user=request.user)
+    return render(request, 'orders/checkout.html', {
+        'form': form,
+    })
+
+
 @csrf_exempt
 def stripe_webhook(request):
     payload = request.body
     sig_header = request.META.get('HTTP_STRIPE_SIGNATURE')
-    endpoint_secret = settings.STRIPE_WEBHOOK_SECRET
+    endpoint_secret = settings.STRIPE_WH_SECRET
 
     try:
         event = stripe.Webhook.construct_event(
@@ -165,7 +173,7 @@ def create_checkout_session(request):
         mode='payment',
         line_items=[{
             'price_data': {
-                'currency': 'gbp'
+                'currency': 'gbp',
                 'unit_amount': int(item.variant.product.price * 100),
                 'product_data': {
                     'name': item.variant.product.name,
@@ -178,4 +186,39 @@ def create_checkout_session(request):
         cancel_url=settings.CHECKOUT_CANCEL_URL,
     )
 
-    return JsonResponse({'url': session.url})
+    return redirect(session.url)
+
+
+def checkout_success(request):
+    """ Show order success page """
+    session_id = request.GET.get('session_id')
+    session = None
+    customer_details = None
+    metadata = {}
+    line_items = []
+    if not session_id:
+        return redirect('home')
+
+    try:
+        session = stripe.checkout.Session.retrieve(session_id)
+        customer_details = session.customer_details
+        metadata = session.metadata
+        line_items = stripe.checkout.Session.list_line_items(session_id)
+    except Exception as e:
+        pass
+        
+    bag_items = BagItem.objects.filter(**get_bag_filter(request))
+    bag_items.delete()
+    
+    context = {
+        'session': session,
+        'customer_details': customer_details,
+        'metadata': metadata,
+        'line_items': line_items.data if line_items else [],
+    }
+    
+    return render(request, 'orders/success.html', context)
+
+
+def checkout_cancel(request):
+    return render(request, 'orders/cancel.html')

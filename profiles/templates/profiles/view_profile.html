@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+  <h2>My Profile</h2>
+  <ul class="list-group">
+    <li class="list-group-item"><strong>Name:</strong> {{ profile.full_name }}</li>
+    <li class="list-group-item"><strong>Email:</strong> {{ profile.email }}</li>
+    <li class="list-group-item"><strong>Phone:</strong> {{ profile.phone }}</li>
+    <li class="list-group-item"><strong>Address:</strong> {{ profile.address }}</li>
+    <li class="list-group-item"><strong>City:</strong> {{ profile.city }}</li>
+    <li class="list-group-item"><strong>Postal Code:</strong> {{ profile.postal_code }}</li>
+    <li class="list-group-item"><strong>State/Province:</strong> {{ profile.state_province }}</li>
+    <li class="list-group-item"><strong>Country:</strong> {{ profile.country }}</li>
+  </ul>
+  <a href="{% url 'profiles:edit_profile' %}" class="btn btn-primary mt-3">Edit</a>
+  <a href="{% url 'profiles:delete_profile' %}" class="btn btn-danger mt-3">Delete</a>
+</div>
+{% endblock %}

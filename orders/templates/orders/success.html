@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load order_extras %}
+{% block content %}
+<div class="container py-4">
+    <h2>Payment Successful</h2>
+    <p>Thank you for your order! Your payment was successful.</p>
+    <p>Order ID: {{ session.id }}</p>
+    <p>Customer: {{ metadata.full_name }} ({{ metadata.email }})</p>
+    <p>An confirmation email will also be sent to your email. Have a lovely day!</p>
+    <hr>
+    <h3>Your Items:</h3>
+    <ul>
+    {% for item in line_items %}
+        <li>{{ item.quantity }} x {{ item.description }} at £{{ item.amount_total|divide:100|floatformat:2 }}</li>
+    {% empty %}
+        <li>No items found. Please check email confirmation and contact us if any problems.</li>
+    {% endfor %}
+    </ul>
+
+    <div class="mt-4">
+        <a href="{% url 'home' %}" class="btn btn-primary me-2">Back to Home</a>
+    </div>
+</div>
+{% endblock %}

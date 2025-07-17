@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container py-4">
+    <h2>Payment Cancelled / Failed</h2>
+    <p>Your payment was cancelled or failed. If this was a mistake, please try again.</p>
+    <div class="mt-4">
+        <a href="{% url 'home' %}" class="btn btn-primary me-2">Back to Home</a>
+        <a href="{% url 'bag:view_bag' %}" class="btn btn-secondary">Back to Bag</a>
+    </div>
+</div>
+{% endblock %}

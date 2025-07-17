@@ -13,6 +13,7 @@ class Order(models.Model):
     )
     full_name = models.CharField(max_length=100, null=False, blank=False)
     email = models.EmailField(max_length=250, null=False, blank=False)
+    phone = models.CharField(max_length=20, null=False, blank=False)
     address = models.CharField(max_length=250, null=False, blank=False)
     city = models.CharField(max_length=100, null=False, blank=False)
     postal_code = models.CharField(max_length=20, null=False, blank=False)

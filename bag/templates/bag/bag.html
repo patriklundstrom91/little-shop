@@ -15,7 +15,7 @@
             <table class="table table-bordered align-middle text-center">
                 <thead class="table-light">
                     <tr>
-                        <th>Image</th>
+                        <th></th>
                         <th>Product</th>
                         <th>Size</th>
                         <th>Price</th>
@@ -31,9 +31,9 @@
                         </td>
                         <td class="text-start">{{ item.variant.product.name }}</td>
                         <td>{{ item.variant.size }}</td>
-                        <td>£{{ item.variant.price }}</td>
+                        <td>£{{ item.variant.product.price }}</td>
                         <td>{{ item.quantity }}</td>
-                        <td>£{{ item.variant.price|mul:item.quantity }}</td>
+                        <td>£{{ item.variant.product.price|mul:item.quantity|floatformat:2 }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -74,7 +74,7 @@
             Your bag is currently empty.
         </div>
         <div class="text-center mt-3">
-            <a href="{% url 'product_list' %}" class="btn btn-primary">
+            <a href="{% url 'shop:product_list' %}" class="btn btn-primary">
                 Continue Shopping
             </a>
         </div>

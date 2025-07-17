@@ -33,7 +33,7 @@
     <header class="container-fluid fixed-top">
         <div id="banner" class="row text-center">
             <div class="col bg-black text-white">
-                <p><i class="fa-solid fa-check"></i> Free Delivery   <i class="fa-solid fa-check"></i> Fast   <i class="fa-solid fa-check"></i> Convenient<p>
+                <p><i class="fa-solid fa-check"></i> Free Delivery over £25   <i class="fa-solid fa-check"></i> Fast   <i class="fa-solid fa-check"></i> Convenient<p>
             </div>
         </div>
         <nav class="navbar navbar-expand-lg bg-body-tertiary">
@@ -52,15 +52,35 @@
                         </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Dropdown
+                                <div class="text-center">
+                                    <div><i class="fas fa-user fa-lg"></i></div>
+                                    <p class="my-0">My Account</p>
+                                </div>
                             </a>
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="#">Action</a></li>
-                                <li><a class="dropdown-item" href="#">Another action</a></li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="#">Something else here</a></li>
+                                {% if request.user.is_authenticated %}
+                                    <li><a href="{% url 'profiles:view_profile' %}" class="dropdown-item">My Profile</a></li>
+                                    <li><a href="{% url 'account_logout' %}" class="dropdown-item">Logout</a></li>
+                                {% else %}
+                                    <li><a href="{% url 'account_signup' %}" class="dropdown-item">Register</a></li>
+                                    <li><a href="{% url 'account_login' %}" class="dropdown-item">Login</a></li>
+                                {% endif %}
                             </ul>
                         </li>
+                        <li class="nav-item">
+                        <a href="{% url 'bag:view_bag' %}" class="{% if bag_grand_total %}text-info font-weight-bold{% else %}text-black{% endif %} nav-link">
+                            <div class="text-center">
+                                <div><i class="fas fa-shopping-bag fa-lg"></i></div>
+                                <p class="my-0">
+                                    {% if bag_grand_total %}
+                                        ${{ bag_grand_total|floatformat:2 }}
+                                    {% else %}
+                                        $0.00
+                                    {% endif %}
+                                </p>
+                            </div>
+                        </a>
+                    </li>
                     </ul>
                     <form class="d-flex" role="search">
                         <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search"/>
@@ -90,12 +110,13 @@
     </div>
     {% endif %}
 
+    <div class="top-m">
+        {% block page_header %}
+        {% endblock %}
+        {% block content %}
+        {% endblock %}
+    </div>
     
-    {% block page_header %}
-    {% endblock %}
-
-    {% block content %}
-    {% endblock %}
 
     {% block postloadjs %}
     <script>
