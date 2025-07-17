@@ -16,7 +16,7 @@
         <li>No items found. Please check email confirmation and contact us if any problems.</li>
     {% endfor %}
     </ul>
-
+    <p>Total: £{{ total_amount|divide:100|floatformat:2 }}</p>
     <div class="mt-4">
         <a href="{% url 'home' %}" class="btn btn-primary me-2">Back to Home</a>
     </div>

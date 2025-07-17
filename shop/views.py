@@ -45,6 +45,8 @@ def product_detail(request, id, slug):
         variant = form.cleaned_data['variant']
         quantity = form.cleaned_data['quantity']
         selected_variant = variant
+        if not request.session.session_key:
+            request.session.create()
         bag_filter = get_bag_filter(request)
         bag_item, created = BagItem.objects.get_or_create(
             variant=variant,

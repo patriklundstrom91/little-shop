@@ -6,5 +6,5 @@ def get_bag_filter(request):
         return {'user': request.user}
     else:
         if not request.session.session_key:
-            request.session.save()
+            request.session.create()
         return {'session_key': request.session.session_key}

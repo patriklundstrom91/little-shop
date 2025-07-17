@@ -2,12 +2,11 @@ import stripe
 import json
 from decimal import Decimal
 from django.conf import settings
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.http import HttpResponse, JsonResponse
-import stripe.error
 
 from orders.forms import OrderForm
 from orders.models import Order, OrderItem
@@ -75,7 +74,7 @@ def handle_checkout_session(session):
         return
     subtotal = sum(item['unit_price'] * item['quantity'] for item in bag)
     if subtotal < settings.FREE_DELIVERY_THRESHOLD:
-        delivery = subtotal * Decimal(
+        delivery = Decimal(subtotal) * Decimal(
             settings.STANDARD_DELIVERY_PERCENTAGE / 100
         )
     else:
@@ -138,7 +137,7 @@ def create_checkout_session(request):
         item.variant.product.price * item.quantity for item in bag_items
     )
     if subtotal < settings.FREE_DELIVERY_THRESHOLD:
-        delivery = subtotal * Decimal(
+        delivery = Decimal(subtotal) * Decimal(
             settings.STANDARD_DELIVERY_PERCENTAGE / 100
         )
     else:
@@ -150,7 +149,8 @@ def create_checkout_session(request):
         {
             'variant_id': item.variant.id,
             'unit_price': float(item.variant.product.price),
-            'quantity': item.quantity
+            'quantity': item.quantity,
+            'sku': item.variant.sku,
         }
         for item in bag_items
     ])
@@ -168,19 +168,31 @@ def create_checkout_session(request):
         'country': data.get('country'),
     }
 
+    line_items = [{
+        'price_data': {
+            'currency': 'gbp',
+            'unit_amount': int(item.variant.product.price * 100),
+            'product_data': {
+                'name': item.variant.product.name,
+            },
+        },
+        'quantity': item.quantity,
+    } for item in bag_items]
+
+    if delivery > 0:
+        line_items.append({
+            'price_data': {
+                'currency': 'gbp',
+                'unit_amount': int(delivery * 100),
+                'product_data': {'name': 'Delivery Charge'},
+            },
+            'quantity': 1,
+        })
+
     session = stripe.checkout.Session.create(
         payment_method_types=['card'],
         mode='payment',
-        line_items=[{
-            'price_data': {
-                'currency': 'gbp',
-                'unit_amount': int(item.variant.product.price * 100),
-                'product_data': {
-                    'name': item.variant.product.name,
-                },
-            },
-            'quantity': item.quantity,
-        } for item in bag_items],
+        line_items=line_items,
         metadata=metadata,
         success_url=settings.CHECKOUT_SUCCESS_URL,
         cancel_url=settings.CHECKOUT_CANCEL_URL,
@@ -190,12 +202,16 @@ def create_checkout_session(request):
 
 
 def checkout_success(request):
-    """ Show order success page """
+    """ Show order success page and update product stock"""
     session_id = request.GET.get('session_id')
     session = None
     customer_details = None
     metadata = {}
     line_items = []
+    total_amount = None
+    variant_ids = []
+    quantities = []
+
     if not session_id:
         return redirect('home')
 
@@ -204,9 +220,24 @@ def checkout_success(request):
         customer_details = session.customer_details
         metadata = session.metadata
         line_items = stripe.checkout.Session.list_line_items(session_id)
+        total_amount = session.get('amount_total')
     except Exception as e:
         pass
-        
+    
+    if metadata and 'bag_data' in metadata:
+        try:
+            bag_data = json.loads(metadata['bag_data'])
+            for item in bag_data:
+                variant_ids.append(item['variant_id'])
+                quantities.append(item['quantity'])
+        except json.JSONDecodeError:
+            pass
+    if variant_ids and quantities:
+        for variant_id, quantity in zip(variant_ids, quantities):
+            variant = get_object_or_404(ProductVariant, pk=variant_id)
+            variant.stock -= quantity
+            variant.save()
+            
     bag_items = BagItem.objects.filter(**get_bag_filter(request))
     bag_items.delete()
     
@@ -215,6 +246,7 @@ def checkout_success(request):
         'customer_details': customer_details,
         'metadata': metadata,
         'line_items': line_items.data if line_items else [],
+        'total_amount': total_amount,
     }
     
     return render(request, 'orders/success.html', context)

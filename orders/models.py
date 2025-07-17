@@ -43,7 +43,13 @@ class OrderItem(models.Model):
     variant = models.ForeignKey(ProductVariant, on_delete=models.PROTECT)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     quantity = models.PositiveIntegerField(default=1)
+    sku = models.CharField(max_length=250, blank=True)
 
+    def save(self, *args, **kwargs):
+        if not self.sku:
+            self.sku = self.variant.sku
+        super().save(*args, **kwargs)
+        
     def total_price(self):
         return self.price * self.quantity
 

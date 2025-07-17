@@ -8,7 +8,7 @@ from shop.models import ProductVariant
 class BagItem(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True,
                              blank=True, on_delete=models.CASCADE)
-    session_key = models.CharField(max_length=50, blank=True)
+    session_key = models.CharField(max_length=50, null=True, blank=True)
     variant = models.ForeignKey(ProductVariant, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField()
 

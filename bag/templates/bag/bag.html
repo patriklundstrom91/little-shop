@@ -12,7 +12,7 @@
     <!-- Bag items-->
     {% if bag_items %}
         <div class="table-responsive mb-4">
-            <table class="table table-bordered align-middle text-center">
+            <table class="table align-middle text-center">
                 <thead class="table-light">
                     <tr>
                         <th></th>
@@ -32,8 +32,24 @@
                         <td class="text-start">{{ item.variant.product.name }}</td>
                         <td>{{ item.variant.size }}</td>
                         <td>£{{ item.variant.product.price }}</td>
-                        <td>{{ item.quantity }}</td>
+                        <td class="bag-qty">
+                            <form action="{% url 'bag:update_bag_item' %}" method="POST" style="display:inline;">
+                                {% csrf_token %}
+                                <input type="hidden" name="variant_id" value="{{ item.variant.id }}">
+                                <input type="number" name="quantity" value="{{ item.quantity }}" min="1" max="{{ item.variant.stock }}">
+                                <input type="submit" class="btn btn-success" value="Update">
+                            </form>
+                            <p class="bag-stock">(Stock: {{item.variant.stock}})</p>
+                        </td>
                         <td>£{{ item.variant.product.price|mul:item.quantity|floatformat:2 }}</td>
+                        <td>
+                            <form action="{% url 'bag:update_bag_item' %}" method="POST" style="display:inline;">
+                                {% csrf_token %}
+                                <input type="hidden" name="variant_id" value="{{ item.variant.id }}">
+                                <input type="hidden" name="quantity" value="0"> 
+                                <input type="submit" class="btn btn-danger" value="Remove">
+                            </form>
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -49,15 +65,15 @@
                         <ul class="list-group list-group-flush mb-3">
                             <li class="list-group-item d-flex justify-content-between">
                                 <span>Subtotal:</span>
-                                <strong>£{{ bag_subtotal }}</strong>
+                                <strong>£{{ bag_subtotal|floatformat:2 }}</strong>
                             </li>
                             <li class="list-group-item d-flex justify-content-between">
                                 <span>Delivery:</span>
-                                <strong>£{{ bag_delivery }}</strong>
+                                <strong>£{{ bag_delivery|floatformat:2 }}</strong>
                             </li>
                             <li class="list-group-item d-flex justify-content-between fs-5">
                                 <span>Grand Total:</span>
-                                <strong class="text-success">£{{ bag_grand_total }}</strong>
+                                <strong class="text-success">£{{ bag_grand_total|floatformat:2 }}</strong>
                             </li>
                         </ul>
                         <div class="d-grid">

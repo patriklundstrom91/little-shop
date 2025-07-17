@@ -207,6 +207,15 @@ ul.errorlist {
     margin-top: 150px;
 }
 
+.bag-qty {
+    vertical-align: middle;
+}
+
+.bag-stock {
+    font-size: 13px;
+    display: inline;
+}
+
 .index-header {
     background-color: #77b6e2;
 }
