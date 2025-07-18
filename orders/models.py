@@ -28,6 +28,7 @@ class Order(models.Model):
     grand_total = models.DecimalField(max_digits=10, decimal_places=2,
                                       default=0, null=False)
     paid = models.BooleanField(default=False)
+    delivered = models.BooleanField(default=False)
     stripe_payment_intent_id = models.CharField(max_length=255, blank=True)
 
     class Meta:

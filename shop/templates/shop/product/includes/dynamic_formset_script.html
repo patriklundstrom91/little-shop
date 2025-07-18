@@ -1,0 +1,45 @@
+{% load crispy_forms_tags %}
+<!-- Variant formset dynamic add/remove JavaScript -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const formsetDiv = document.getElementById('variant-formset');
+    const addButton = document.getElementById('add-variant');
+    const emptyFormHtml = document.getElementById('empty-form-template').innerHTML;
+    const totalForms = document.getElementById('id_variants-TOTAL_FORMS');
+
+    // Add Variant
+    addButton.addEventListener('click', function () {
+        const formNum = parseInt(totalForms.value, 10);
+        const newFormHtml = emptyFormHtml.replace(/__prefix__/g, formNum);
+        formsetDiv.insertAdjacentHTML('beforeend', newFormHtml);
+        totalForms.value = formNum + 1;
+    });
+
+    // Remove Variant
+    formsetDiv.addEventListener('click', function (e) {
+        if (e.target.classList.contains('remove-variant')) {
+            const formRow = e.target.closest('.variant-form');
+            formRow.remove();
+
+            // Update totalForms
+            const forms = formsetDiv.querySelectorAll('.variant-form');
+            totalForms.value = forms.length;
+
+            // Reindex all forms
+            forms.forEach((form, index) => {
+                form.querySelectorAll('input, select, textarea, label').forEach(el => {
+                    if (el.name) {
+                        el.name = el.name.replace(/form-\d+-/, `form-${index}-`);
+                    }
+                    if (el.id) {
+                        el.id = el.id.replace(/form-\d+-/, `form-${index}-`);
+                    }
+                    if (el.htmlFor) {
+                        el.htmlFor = el.htmlFor.replace(/form-\d+-/, `form-${index}-`);
+                    }
+                });
+            });
+        }
+    });
+});
+</script>

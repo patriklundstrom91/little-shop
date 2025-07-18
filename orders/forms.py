@@ -3,9 +3,6 @@ from orders.models import Order
 
 
 class OrderForm(forms.ModelForm):
-    save_to_profile = forms.BooleanField(
-        required=False, initial=True, label='Save to profile'
-    )
     class Meta:
         model = Order
         fields = ['full_name', 'email', 'phone', 'address', 'city',
@@ -24,3 +21,7 @@ class OrderForm(forms.ModelForm):
             self.fields['postal_code'].initial = profile.postal_code
             self.fields['state_province'].initial = profile.state_province
             self.fields['country'].initial = profile.country
+            self.fields['save_to_profile'] = forms.BooleanField(
+                required=False, initial=True, label='Save to profile'
+            )
+

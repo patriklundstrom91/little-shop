@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.urls import reverse
+from django.utils.text import slugify
 
 
 RATING = (
@@ -43,7 +44,7 @@ class Product(models.Model):
         on_delete=models.SET_NULL
     )
     name = models.CharField(max_length=200)
-    slug = models.SlugField(max_length=200)
+    slug = models.SlugField(max_length=200, unique=True)
     image = models.ImageField(
         upload_to='products/%y/%m/%d',
         blank=True
@@ -64,6 +65,16 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+    
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            new_slug = slugify(self.name)
+            count = 1
+            while Product.objects.filter(slug=new_slug).exists():
+                new_slug = f"{slugify(self.name)}-{count}"
+                count += 1
+            self.slug = new_slug
+        super().save(*args, **kwargs)
     
     def get_absolute_url(self):
         return reverse('shop:product_detail', args=[self.id, self.slug])

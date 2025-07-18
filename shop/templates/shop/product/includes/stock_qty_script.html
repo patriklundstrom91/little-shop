@@ -1,3 +1,4 @@
+<!-- Stock and quantity control JavaScript -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const select = document.getElementById('variant-select');
@@ -33,7 +34,7 @@ document.addEventListener('DOMContentLoaded', function() {
             qty.className = `col-12 d-block`;
             addToBag.className = `btn btn-primary mt-2`;
             qtyInput.value = 1; // Only reset on variant change
-        } else {
+        } else { // Disable and remove button if stock is less than 1
             decrementBtn.disabled = true;
             incrementBtn.disabled = true;
             qtyInput.disabled = true;
@@ -44,7 +45,7 @@ document.addEventListener('DOMContentLoaded', function() {
             addToBag.className = `btn btn-primary mt-2 d-none`;
         }
     }
-
+    // Updating if increment and decrement btn should be disabled or not
     function updateButtonStates() {
         let current = parseInt(qtyInput.value, 10);
         let max = parseInt(qtyInput.max, 10);
@@ -52,7 +53,7 @@ document.addEventListener('DOMContentLoaded', function() {
         incrementBtn.disabled = (current >= max);
     }
 
-
+    // When changing size putting value to 1 and trigger updateControls
     select.addEventListener('change', function() {
         qtyInput.value = 1;
         updateControls();

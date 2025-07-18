@@ -4,6 +4,11 @@ from .models import Category, Product, ProductVariant, Tag, ProductTag, Review
 # Register your models here.
 
 
+class ProductVariantInline(admin.TabularInline):
+    model = ProductVariant
+    extra = 0
+
+
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ['name', 'slug']
@@ -23,6 +28,7 @@ class ProductAdmin(admin.ModelAdmin):
     list_filter = ['created', 'updated']
     list_editable = ['price', 'active']
     prepopulated_fields = {'slug': ('name',)}
+    inlines = [ProductVariantInline]
 
 
 @admin.register(ProductVariant)

@@ -1,6 +1,8 @@
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib import messages
+from django.contrib.admin.views.decorators import staff_member_required
 from .models import Category, Product, ProductVariant, Tag, ProductTag, Review
+from .forms import ProductForm, ProductVariantFormSet, ReviewForm
 from bag.forms import AddToBagForm
 from bag.models import BagItem
 from bag.utils import get_bag_filter
@@ -9,6 +11,7 @@ from bag.utils import get_bag_filter
 
 
 def product_list(request, category_slug=None):
+    """ Product list view to show all products"""
     category = None
     categories = Category.objects.all()
     products = Product.objects.filter(active=True)
@@ -27,18 +30,17 @@ def product_list(request, category_slug=None):
 
 
 def product_detail(request, id, slug):
+    """ Product detail and product rating/review view"""
     product = get_object_or_404(
         Product, id=id, slug=slug, active=True
     )
     variants = product.variants.filter(active=True)
-    
-    # Handle GET variant
     selected_variant = None
     variant_id = request.GET.get('variant')
     if variant_id:
         selected_variant = get_object_or_404(ProductVariant,
                                              pk=variant_id, product=product)
-    # Handle POST add to bag    
+        
     form = AddToBagForm(product=product, data=request.POST or None)
 
     if request.method == 'POST' and form.is_valid():
@@ -62,7 +64,6 @@ def product_detail(request, id, slug):
         )
         return redirect('bag:view_bag')
     
-    # Handle reviews and rating
     reviews = Review.objects.filter(product=product.id, published=True)
     review_count = reviews.count()
     if review_count:
@@ -90,3 +91,26 @@ def product_detail(request, id, slug):
          'form': form,
          }
     )
+
+
+@staff_member_required
+def add_product(request):
+    if request.method == 'POST':
+        product_form = ProductForm(request.POST, request.FILES)
+        if product_form.is_valid():
+            product = product_form.save(commit=False)
+            formset = ProductVariantFormSet(request.POST, instance=product)
+            if formset.is_valid():
+                product.save()
+                formset.save()
+                return redirect('shop:product_list')
+        else:
+            formset = ProductVariantFormSet(request.POST)
+    else:
+        product_form = ProductForm()
+        formset = ProductVariantFormSet()
+
+    return render(request, 'shop/product/add_product.html', {
+        'product_form': product_form,
+        'variant_formset': formset,
+    })

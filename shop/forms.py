@@ -1,8 +1,35 @@
 from django import forms
-from .models import Review
+from .models import Product, ProductVariant, Review
+
+
+class ProductForm(forms.ModelForm):
+    """ Form to handle products as staff """
+    class Meta:
+        model = Product
+        fields = ['name', 'description', 'category',
+                  'price', 'image', 'active']
+
+
+class ProductVariantForm(forms.ModelForm):
+    """ Form to handle product variant as staff """
+    class Meta:
+        model = ProductVariant
+        fields = ['size', 'stock', 'sku', 'active']
+
+
+ProductVariantFormSet = forms.inlineformset_factory(
+    Product,
+    ProductVariant,
+    form=ProductVariantForm,
+    extra=1,
+    min_num=1,
+    validate_min=True,
+    can_delete=True
+)
 
 
 class ReviewForm(forms.ModelForm):
+    """ Form to write reviews as shopper """
     class Meta:
         model = Review
         fields = ['subject', 'review', 'rating', 'published']
