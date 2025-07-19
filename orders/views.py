@@ -10,6 +10,7 @@ from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.http import HttpResponse, JsonResponse
+from time import sleep
 
 from orders.forms import OrderForm
 from orders.models import Order, OrderItem
@@ -71,6 +72,7 @@ def handle_checkout_session(session):
     save_to_profile = metadata.get('save_to_profile') == 'true'
     grand_total = int(session.get('amount_total', 0)) / 100
     payment_intent = session.get('payment_intent')
+    stripe_session_id = session.get('id')
 
     # Check and avoid duplicate Order creation
     if Order.objects.filter(stripe_payment_intent_id=payment_intent).exists():
@@ -98,6 +100,7 @@ def handle_checkout_session(session):
         grand_total=grand_total,
         paid=True,
         stripe_payment_intent_id=payment_intent,
+        stripe_checkout_session_id=stripe_session_id,
     )
     
     # Create OrderItems
@@ -208,12 +211,19 @@ def checkout_success(request):
     """ Show order success page and update product stock"""
     session_id = request.GET.get('session_id')
     session = None
+    order = None
     customer_details = None
     metadata = {}
     line_items = []
     total_amount = None
     variant_ids = []
     quantities = []
+    if session_id:
+        for _ in range(5):
+            order = Order.objects.filter(stripe_checkout_session_id=session_id).first()
+            if order:
+                break
+            sleep(1)
 
     if not session_id:
         return redirect('home')
@@ -250,6 +260,7 @@ def checkout_success(request):
         'metadata': metadata,
         'line_items': line_items.data if line_items else [],
         'total_amount': total_amount,
+        'order': order,
     }
     
     return render(request, 'orders/success.html', context)

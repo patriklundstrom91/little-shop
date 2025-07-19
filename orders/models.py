@@ -30,6 +30,8 @@ class Order(models.Model):
     paid = models.BooleanField(default=False)
     delivered = models.BooleanField(default=False)
     stripe_payment_intent_id = models.CharField(max_length=255, blank=True)
+    stripe_checkout_session_id = models.CharField(max_length=255, blank=True,
+                                                  null=True, unique=True)
 
     class Meta:
         ordering = ['-created']
