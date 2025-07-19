@@ -55,7 +55,7 @@
         <td>{{ item.variant.size }}</td>
         <td>{{ item.quantity }}</td>
         <td>{{ item.price }}</td>
-        <td>sum(item.price * item.quantity)</td>
+        <td>{{ item.total_price }}</td>
       </tr>
       {% endfor %}
     </tbody>
