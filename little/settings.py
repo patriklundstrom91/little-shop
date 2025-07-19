@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 import os
+import dj_database_url
 from pathlib import Path
 
 if os.path.isfile('env.py'):
@@ -30,7 +31,8 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 DEBUG = 'DEVELOPMENT' in os.environ
 
 ALLOWED_HOSTS = ['127.0.0.1',
-                 'localhost',]
+                 'localhost',
+                 'little-shop-e7360dae3788.herokuapp.com',]
 
 
 # Application definition
@@ -142,12 +144,8 @@ WSGI_APPLICATION = 'little.wsgi.application'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
-
+     'default': dj_database_url.parse(os.environ.get('DATABASE_URL'))
+ }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
