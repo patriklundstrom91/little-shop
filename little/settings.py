@@ -128,7 +128,6 @@ if 'DEVELOPMENT' in os.environ:
     DEFAULT_FROM_EMAIL = 'littlen@example.com'
     CHECKOUT_SUCCESS_URL = 'http://127.0.0.1:8000/orders/success/?session_id={CHECKOUT_SESSION_ID}'
     CHECKOUT_CANCEL_URL = 'http://127.0.0.1:8000/orders/cancel/'
-
 else:
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
     EMAIL_USE_TLS = True
@@ -137,6 +136,9 @@ else:
     EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
     EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASS')
     DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL')
+
+CHECKOUT_SUCCESS_URL = 'https://little-shop-e7360dae3788.herokuapp.com/orders/success/?session_id={CHECKOUT_SESSION_ID}'
+CHECKOUT_CANCEL_URL = 'https://little-shop-e7360dae3788.herokuapp.com/orders/cancel/'
 
 WSGI_APPLICATION = 'little.wsgi.application'
 
