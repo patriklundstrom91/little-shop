@@ -54,14 +54,14 @@
         <td>{{ item.variant.product.name }}</td>
         <td>{{ item.variant.size }}</td>
         <td>{{ item.quantity }}</td>
-        <td>{{ item.price }}</td>
-        <td>{{ item.total_price }}</td>
+        <td>£{{ item.price }}</td>
+        <td>£{{ item.total_price }}</td>
       </tr>
       {% endfor %}
     </tbody>
   </table>
-
-  <h5 class="text-end">Total: <strong>{{ order.grand_total }}</strong></h5>
+  <p class="text-end">Delivery: <strong>£{{ order.delivery_cost }}</strong></p>
+  <h5 class="text-end">Total: <strong>£{{ order.grand_total }}</strong></h5>
 
   <a href="{% url 'orders:order_list' %}" class="btn btn-secondary mt-3">Back to Orders</a>
 </div>
