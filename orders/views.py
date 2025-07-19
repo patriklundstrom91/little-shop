@@ -1,9 +1,12 @@
 import stripe
 import json
+import csv
 from decimal import Decimal
 from django.conf import settings
 from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib import messages
+from django.contrib.admin.views.decorators import staff_member_required
+from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.http import HttpResponse, JsonResponse
@@ -254,3 +257,70 @@ def checkout_success(request):
 
 def checkout_cancel(request):
     return render(request, 'orders/cancel.html')
+
+
+@staff_member_required
+def order_list(request):
+    """ View for staff to see orders """
+    delivered = request.GET.get('delivered')
+    user_query = request.GET.get('user')
+    date_from = request.GET.get('from')
+    date_to = request.GET.get('to')
+
+    orders = Order.objects.all()
+
+    if delivered == 'true':
+        orders = orders.filter(delivered=True)
+    elif delivered == 'false':
+        orders = orders.filter(delivered=False)
+
+    if user_query:
+        orders = orders.filter(
+            Q(user__username__icontains=user_query) |
+            Q(email__icontains=user_query) |
+            Q(full_name__icontains=user_query)
+        )
+
+    if date_from:
+        orders = orders.filter(created__date__gte=date_from)
+    if date_to:
+        orders = orders.filter(created__date__lte=date_to)
+    context = {
+        'orders': orders,
+        'filter_value': delivered,
+        'user_query': user_query,
+        'date_from': date_from,
+        'date_to': date_to
+    }
+    return render(request, 'orders/order_list.html', context)
+
+
+@staff_member_required
+def order_detail(request, pk):
+    """ View for order details """
+    order = get_object_or_404(Order, pk=pk)
+    return render(request, 'orders/order_detail.html', {'order': order})
+
+
+@staff_member_required
+def export_orders_csv(request):
+    """ Export to CSV view """
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="orders.csv"'
+
+    writer = csv.writer(response)
+    writer.writerow(['Order ID', 'Customer', 'Email', 'Created Date', 'Delivered', 'Total'])
+
+    orders = Order.objects.all()
+
+    for order in orders:
+        writer.writerow([
+            order.id,
+            order.full_name,
+            order.email,
+            order.created.strftime("%Y-%m-%d %H:%M"),
+            "Yes" if order.delivered else "No",
+            str(order.grand_total),
+        ])
+
+    return response

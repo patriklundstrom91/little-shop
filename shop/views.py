@@ -95,6 +95,7 @@ def product_detail(request, id, slug):
 
 @staff_member_required
 def add_product(request):
+    """ View to allow logged in staff to add products front-end """
     if request.method == 'POST':
         product_form = ProductForm(request.POST, request.FILES)
         if product_form.is_valid():
@@ -114,3 +115,38 @@ def add_product(request):
         'product_form': product_form,
         'variant_formset': formset,
     })
+
+
+@staff_member_required
+def edit_product(request, pk):
+    """ View to allow staff to edit/delete products front-end """
+    product = get_object_or_404(Product, pk=pk)
+    if request.method == 'POST':
+        product_form = ProductForm(request.POST, request.FILES,
+                                   instance=product)
+        formset = ProductVariantFormSet(request.POST, instance=product)
+        if product_form.is_valid() and formset.is_valid():
+            product = product_form.save()
+            formset.save()
+            return redirect('shop:product_detail', id=product.id,
+                            slug=product.slug)
+    else:
+        product_form = ProductForm(instance=product)
+        formset = ProductVariantFormSet(instance=product)
+
+    return render(request, 'shop/product/edit_product.html', {
+        'product_form': product_form,
+        'variant_formset': formset,
+        'product': product,
+    })
+
+
+@staff_member_required
+def delete_product(request, pk):
+    product = get_object_or_404(Product, pk=pk)
+    if request.method == 'POST':
+        product.delete()
+        return redirect('shop:product_list')
+    return render(
+        request, 'shop/product/confirm_delete.html', {'product': product}
+    )

@@ -12,4 +12,8 @@ urlpatterns = [
     path('webhook/', stripe_webhook, name='stripe_webhook'),
     path('success/', views.checkout_success, name='checkout_success'),
     path('cancel/', views.checkout_cancel, name='checkout_cancel'),
+    path('orders/<int:pk>/', views.order_detail, name='order_detail'),
+    path('orders/', views.order_list, name='order_list'),
+    path('orders/export/csv/', views.export_orders_csv,
+         name='export_orders_csv'),
 ]

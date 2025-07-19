@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% load static %}
+<!-- Order list for staff -->
+{% block content %}
+<div class="container my-4">
+    <h2 class="mb-4">All Orders</h2>
+    <!-- Filter options -->
+    <form method="get" class="row mb-4 g-2">
+        <div class="col-md-3">
+            <input type="text" name="user" class="form-control" placeholder="Search user or email"
+                value="{{ user_query|default:'' }}">
+        </div>
+        <div class="col-md-2">
+            <input type="date" name="from" class="form-control" value="{{ date_from }}">
+        </div>
+        <div class="col-md-2">
+            <input type="date" name="to" class="form-control" value="{{ date_to }}">
+        </div>
+        <div class="col-md-2">
+            <select name="delivered" class="form-select">
+            <option value="" {% if not filter_value %}selected{% endif %}>All</option>
+            <option value="true" {% if filter_value == 'true' %}selected{% endif %}>Delivered</option>
+            <option value="false" {% if filter_value == 'false' %}selected{% endif %}>Not Delivered</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <button type="submit" class="btn btn-primary w-100">Apply Filter</button>
+        </div>
+    </form>
+
+    <!-- Order list -->
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Customer</th>
+                <th>Date</th>
+                <th>Total</th>
+                <th>Delivered</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+            <tr>
+                <td>{{ order.id }}</td>
+                <td>{{ order.full_name }}</td>
+                <td>{{ order.created|date:"SHORT_DATETIME_FORMAT" }}</td>
+                <td>{{ order.grand_total }}</td>
+                <td>
+                {% if order.delivered %}
+                    <span class="badge bg-success">Yes</span>
+                {% else %}
+                    <span class="badge bg-warning text-dark">No</span>
+                {% endif %}
+                </td>
+                <td>
+                <a href="{% url 'orders:order_detail' order.pk %}" class="btn btn-sm btn-outline-secondary">View</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6">No orders found.</td>
+            </tr>
+            {% endfor %}
+            <a href="{% url 'orders:export_orders_csv' %}" class="btn btn-sm btn-outline-dark">
+                <i class="fa fa-download"></i> Export CSV
+            </a>
+        </tbody>
+    </table>
+</div>
+{% endblock %}

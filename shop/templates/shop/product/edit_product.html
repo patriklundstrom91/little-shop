@@ -29,13 +29,33 @@
             </div>
             <button type="button" id="add-variant" class="btn btn-outline-primary btn-sm mt-2">Add another variant</button>
         </div>
+        <a href="{% url 'shop:product_detail' product.id product.slug %}" class="btn btn-secondary">Cancel</a>
         <button type="submit" class="btn btn-success">Save Product</button>
     </form>
 
     <!-- Hidden template for JS -->
     <div id="empty-form-template" class="d-none">
         <div class="variant-form border rounded p-3 mb-3">
-        {{ variant_formset.empty_form.as_p|safe }}
+            <div class="mb-3">
+                {{ variant_formset.empty_form.size|as_crispy_field }}
+            </div>
+            <div class="mb-3">
+                {{ variant_formset.empty_form.stock|as_crispy_field }}
+            </div>
+            <div class="mb-3">
+                {{ variant_formset.empty_form.sku|as_crispy_field }}
+            </div>
+            <div class="mb-3">
+                {{ variant_formset.empty_form.active|as_crispy_field }}
+            </div>
+            {% if variant_formset.empty_form.DELETE %}
+            <div>
+                {{ variant_formset.empty_form.DELETE|as_crispy_field }}
+            </div>
+            {% endif %}
+            <div class="col-12 mt-2">
+                <button type="button" class="btn btn-danger btn-sm remove-variant">Remove Variant</button>
+            </div>
         </div>
     </div>
 </div>

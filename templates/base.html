@@ -50,6 +50,20 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'shop:product_list' %}">Shop</a>
                         </li>
+                        {% if request.user.is_staff %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <div class="text-center">
+                                    <div><i class="fas fa-gears fa-lg"></i></div>
+                                    <p class="my-0">Management</p>
+                                </div>
+                            </a>
+                            <ul class="dropdown-menu">
+                                    <li><a href="{% url 'shop:add_product' %}" class="dropdown-item">Add Product</a></li>
+                                    <li><a href="{% url 'orders:order_list' %}" class="dropdown-item">Orders</a></li>
+                            </ul>
+                        </li>
+                        {% endif %}
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <div class="text-center">
