@@ -3,7 +3,7 @@ Hi there,
 The product "{{ variant.product.name }}", size {{ variant.size }} is now back in stock!
 
 View it and order now:
-https://little-shop-e7360dae3788.herokuapp.com/{{ variant.product.get_absolute_url }}
+https://little-shop-e7360dae3788.herokuapp.com{{ variant.product.get_absolute_url }}
 
 Thanks for your interest!
 Little'n Shop Team

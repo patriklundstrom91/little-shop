@@ -10,7 +10,7 @@ Paid with Stripe.
 
 Items:
 {% for item in order.items.all %}
-- {{ item.quantity }} x {{ item.variant.sku }} | {{ item.variant.product.name }} ({{ item.variant.size }}) at £{{ item.price }} each, total: £{{ item.total_price|floatformat:2 }}
+- {{ item.quantity }} x SKU: {{ item.variant.sku }} | {{ item.variant.product.name }} ({{ item.variant.size }}) at £{{ item.price }} each, total: £{{ item.total_price|floatformat:2 }}
 {% endfor %}
 
 This order will be shipped to:

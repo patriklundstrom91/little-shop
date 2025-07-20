@@ -9,8 +9,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     {% endblock %}
     {% block extra_meta %}
-    <meta name="description" content="">
-    <meta name="keywords" content="">
+    <meta name="description" content="A personal baby clothes brand with ties to north England and Sweden, combining functionality with minimalistic and sleek design. This is out baby clothes online shop">
+    <meta name="keywords" content="Baby, Baby clothes, Toddler, Baby shop, Bodysuit, Baby dress, Dress, European design, online shop, shop, e-commerce">
     {% endblock %}
     <!-- Bootstrap CSS -->
     {% block corecss %}
@@ -21,9 +21,6 @@
     {% endblock %}
 
     {% block corejs %}
-        
-        <!-- Stripe -->
-        
     {% endblock %}
     {% block extra_js %}
     {% endblock %}
@@ -38,7 +35,7 @@
         </div>
         <nav class="navbar navbar-expand-lg bg-body-tertiary">
             <div class="container-fluid">
-                <a class="navbar-brand" href="{% url 'home' %}">Little'n</a>
+                <a class="navbar-brand" href="{% url 'home' %}"><img id="navlogo" src="{% static 'img/logo_small.png' %}" alt="logo"> Little'n</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -96,8 +93,8 @@
                         </a>
                     </li>
                     </ul>
-                    <form class="d-flex" role="search">
-                        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search"/>
+                    <form class="d-flex" role="search" method="GET" action="{% url 'shop:product_search' %}">
+                        <input class="form-control me-2" type="search" name="search" placeholder="Search products" aria-label="Search products" required>
                         <button class="btn btn-outline-success" type="submit">
                             <span class="icon">
                                 <i class="fa-solid fa-magnifying-glass"></i>

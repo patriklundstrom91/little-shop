@@ -6,34 +6,52 @@
 {% endblock %}
 
 {% block content %}
-  <div id="categories">
-    <h3>Categories</h3>
-    <ul>
-      <li {% if not category %}class="selected"{% endif %}>
-        <a href="{% url "shop:product_list" %}">All</a>
-      </li>
-      {% for c in categories %}
-        <li {% if category.slug == c.slug %}class="selected"{% endif %}>
-          <a href="{{ c.get_absolute_url }}">{{ c.name }}</a>
-        </li>
-      {% endfor %}
-    </ul>
+<div class="container py-3">
+  <!-- Categories -->
+  <div class="d-md-flex justify-content-start flex-wrap gap-2" id="categoryMenu">
+    <a href="{% url 'shop:product_list' %}" class="btn btn-sm {% if not category %}btn-primary{% else %}btn-outline-primary{% endif %}">
+      All
+    </a>
+    {% for c in categories %}
+      <a href="{{ c.get_absolute_url }}" class="btn btn-sm {% if category.slug == c.slug %}btn-primary{% else %}btn-outline-primary{% endif %}">
+        {{ c.name }}
+      </a>
+    {% endfor %}
   </div>
-  <div id="main" class="product-list">
-    <h1>{% if category %}{{ category.name }}{% else %}Products{% endif %}</h1>
-    {% if products %}
+
+</div>
+
+<!-- Product Grid -->
+<div class="container">
+  <h1 class="mb-4">
+  {% if query %}
+    Search Results for “{{ query }}”
+  {% elif category %}
+    {{ category.name }}
+  {% else %}
+    All Products
+  {% endif %}
+  </h1>
+
+  {% if products %}
+  <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-4 g-4">
     {% for product in products %}
-      <div class="item">
-        <a href="{{ product.get_absolute_url }}">
-          <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static "img/noimage.png" %}{% endif %}" alt="{{ product.name }}">
-        </a>
-        <a href="{{ product.get_absolute_url }}">{{ product.name }}</a>
-        <br>
-        ${{ product.price }}
+      <div class="col">
+        <div class="card h-100 shadow-sm">
+          <a href="{{ product.get_absolute_url }}">
+            <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static 'img/noimage.png' %}{% endif %}" class="card-img-top img-fluid list-img" alt="{{ product.name }}">
+            <div class="card-body">
+              <h5 class="card-title">{{ product.name }}</h5>
+              <p><i class="fas fa-tag mr-1"></i>{{ product.category }}</p>
+              <p class="card-text text-muted">£{{ product.price|floatformat:2 }}</p>
+            </div>
+          </a>
+        </div>
       </div>
     {% endfor %}
-    {% else %}
-      <h5>No Products Available</h5>
-    {% endif %}
   </div>
+  {% else %}
+    <h5>No products available</h5>
+  {% endif %}
+</div>
 {% endblock %}

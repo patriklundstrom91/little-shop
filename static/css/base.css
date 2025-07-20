@@ -198,6 +198,10 @@ ul.errorlist {
     overflow: hidden;
 }
 
+#navlogo {
+    max-height: 46px;
+}
+
 .bag-img {
     max-width: 80px;
     max-height: 80px;
@@ -220,17 +224,10 @@ ul.errorlist {
     background-color: #77b6e2;
 }
 
-.product-list .item {
-    width: 25%;
-    padding: 10px 20px 10px 0;
-    float: left;
-    text-align: center;
-    line-height: 1.2;
-}
-
-.product-list .item img {
+.list-img {
+    object-fit: cover;
+    max-height: 456px;
     width: 100%;
-    margin-bottom: 8px;
 }
 
 .product-detail {
@@ -354,4 +351,30 @@ ul.errorlist {
 
 .recommendations.cart img {
     width: 120px;
+}
+
+
+/* from CSS-tricks.com: https://css-tricks.com/snippets/css/css-triangle/ */
+
+.arrow-up {
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-bottom: 10px solid black;
+    position: absolute;
+    top: -10px;
+    right: 36px;
+}
+
+
+/* Specific adjustments for smaller screens, mobile and tablet */
+
+@media (max-width: 991px) {
+    .header-container {
+        padding-top: 116px;
+    }
+    body {
+        height: calc(100vh - 116px);
+    }
 }

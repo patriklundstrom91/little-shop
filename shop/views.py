@@ -2,6 +2,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 from .models import Category, Product, ProductVariant, Tag, ProductTag, Review, BackInStock
 from .forms import ProductForm, ProductVariantFormSet, ReviewForm
 from bag.forms import AddToBagForm
@@ -30,6 +31,20 @@ def product_list(request, category_slug=None):
         }
     )
 
+def product_search(request):
+    """ Product search """
+    query = request.GET.get('search', '')
+    products = Product.objects.filter(
+        name__icontains=query, active=True
+    ) if query else Product.objects.none()
+
+    context = {
+        'products': products,
+        'query': query,
+        'category': None,
+        'categories': Category.objects.all(),
+    }
+    return render(request, 'shop/product/list.html', context)
 
 def product_detail(request, id, slug):
     """ Product detail, add to bag and product rating/review view"""
