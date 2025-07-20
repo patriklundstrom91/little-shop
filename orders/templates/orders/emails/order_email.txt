@@ -1,12 +1,12 @@
 New Order Received! 
----------------------
+--------------------------
 
 Order ID: {{ order.id }}
 Customer: {{ order.full_name }} - {{ order.email }}
 
 Items:
 {% for item in order.items.all %}
-- {{ item.quantity }} × {{ item.variant.product.name }} ({{ item.variant.size }}) at £{{ item.price }} each, total: £{{ item.total_price|floatformat:2 }}
+- {{ item.quantity }} x {{ item.variant.sku }} | {{ item.variant.product.name }} ({{ item.variant.size }}) at £{{ item.price }} each, total: £{{ item.total_price|floatformat:2 }}
 {% endfor %}
 
 Subtotal: £{{ order.order_total|floatformat:2 }}
