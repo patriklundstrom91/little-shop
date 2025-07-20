@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container my-4">
+    <h2>Order #{{ order.id }}</h2>
+    <p><strong>Order Date:</strong> {{ order.created|date:"F j, Y, H:i" }}</p>
+    <p>
+        <strong>Delivery info:</strong><br>
+        {{ order.full_name }}<br>
+        {{ order.email }}<br>
+        {{ order.phone }}<br>
+        {{ order.address }}<br>
+        {{ order.postal_code }}<br>
+        {{ order.city }}<br>
+        {{ order.state_province }}<br>
+        {{ order.country }}
+    </p>
+    <p><strong>Status:</strong> {% if order.delivered %}Delivered{% else %}Processing{% endif %}</p>
+
+    <hr>
+
+    <h4>Items</h4>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Size</th>
+                <th>SKU</th>
+                <th>Quantity</th>
+                <th>Unit price</th>
+                <th>Total Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in order.items.all %}
+            <tr>
+                <td>{{ item.variant.product.name }}</td>
+                <td>{{ item.variant.size }}</td>
+                <td>{{ item.variant.sku }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>£{{ item.price }}</td>
+                <td>£{{ item.total_price|floatformat:2 }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <p>Delivery Cost: £{{ order.delivery_cost|floatformat:2 }}</p>
+    <p><strong>Grand Total: £{{ order.grand_total|floatformat:2 }}</strong></p>
+
+    <div class="mt-4">
+        <a href="{% url 'profiles:view_profile' %}" class="btn btn-secondary">Back to Orders</a>
+    </div>
+</div>
+{% endblock %}

@@ -9,6 +9,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
+from django.template.loader import render_to_string
 from django.http import HttpResponse, JsonResponse
 from time import sleep
 
@@ -124,11 +125,20 @@ def handle_checkout_session(session):
         profile.save()
 
     # Send confirmation email
+    customer_email_body = render_to_string('emails/confirmation_email_customer.txt',
+                                           {'order': order})
+    internal_order_body = render_to_string('emails/order_email.txt', {'order': order})
     send_mail(
         subject=f'Your order confirmation #{order.id}',
-        message=f'Hi {full_name}, your order has been recieved. \nTotal: £{grand_total}',
+        message=customer_email_body,
         from_email=settings.DEFAULT_FROM_EMAIL,
         recipient_list=[email],
+    )
+    send_mail(
+        subject=f'New order Received - #{order.id}',
+        message=internal_order_body,
+        from_email='littlen.shopping@gmail.com',
+        recipient_list=['littlen.shopping@gmail.com']
     )
 
 

@@ -1,0 +1,20 @@
+Hi {{ order.full_name }},
+
+Thank you for your order!
+
+Order #: {{ order.id }}
+Total amount: £{{ order.grand_total|floatformat:2 }}
+Paid with Stripe.
+
+Items:
+{% for item in order.items.all %}
+- {{ item.quantity }} x {{ item.variant.product.name }} ({{ item.variant.size }}) at £{{ item.price }} each, total: £{{ item.total_price|floatformat:2 }}
+{% endfor %}
+
+This order will be shipped to:
+{{ order.address }}
+{{ order.city }}, {{ order.postal_code }}
+{{ order.country }}
+
+Thanks for shopping with us!
+- Little'n Shop 🛍️
