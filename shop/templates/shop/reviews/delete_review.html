@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+<div class="container py-4">
+  <h2 class="mb-3">Delete Your Review</h2>
+  <p>Are you sure you want to delete your review for <strong>{{ review.product.name }}</strong>?</p>
+
+  <div class="border p-3 mb-3">
+    <strong>Rating:</strong> {{ review.rating|add:"1" }}/5<br>
+    <strong>Review:</strong>
+    <p>{{ review.review|linebreaks }}</p>
+    <small class="text-muted">Posted on {{ review.created|date:"F j, Y" }}</small>
+  </div>
+
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Yes, delete my review</button>
+    <a href="{% url 'shop:product_detail' review.product.id review.product.slug %}" class="btn btn-secondary">
+      Cancel
+    </a>
+  </form>
+</div>
+
+{% endblock %}

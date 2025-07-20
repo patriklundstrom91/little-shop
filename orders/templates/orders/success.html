@@ -13,7 +13,7 @@
         <h3>Your Items:</h3>
         <ul>
         {% for item in order.items.all %}
-            <li>{{ item.quantity }} x {{ item.variant.product.name }} at £{{ item.get_total|floatformat:2 }}</li>
+            <li>{{ item.quantity }} x {{ item.variant.product.name }} at £{{ item.price }} each, total: £{{ item.total_price|floatformat:2 }}</li>
         {% empty %}
             <li>No items found. Please check email confirmation and contact us if any problems.</li>
         {% endfor %}

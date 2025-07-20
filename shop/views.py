@@ -1,11 +1,13 @@
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth.decorators import login_required
 from .models import Category, Product, ProductVariant, Tag, ProductTag, Review
 from .forms import ProductForm, ProductVariantFormSet, ReviewForm
 from bag.forms import AddToBagForm
 from bag.models import BagItem
 from bag.utils import get_bag_filter
+from django.utils.timezone import now
 
 # Create your views here.
 
@@ -30,7 +32,7 @@ def product_list(request, category_slug=None):
 
 
 def product_detail(request, id, slug):
-    """ Product detail and product rating/review view"""
+    """ Product detail, add to bag and product rating/review view"""
     product = get_object_or_404(
         Product, id=id, slug=slug, active=True
     )
@@ -42,7 +44,18 @@ def product_detail(request, id, slug):
                                              pk=variant_id, product=product)
         
     form = AddToBagForm(product=product, data=request.POST or None)
-
+    review_form = ReviewForm()
+    if request.method == 'POST' and 'submit_review' in request.POST and request.user.is_authenticated:
+        review_form = ReviewForm(request.POST)
+        if review_form.is_valid():
+            review = review_form.save(commit=False)
+            review.product = product
+            review.user = request.user
+            review.published = True
+            review.save()
+            messages.success(request, "Your review was submitted.")
+            return redirect('shop:product_detail', id=product.id, slug=product.slug)
+        
     if request.method == 'POST' and form.is_valid():
         variant = form.cleaned_data['variant']
         quantity = form.cleaned_data['quantity']
@@ -65,6 +78,7 @@ def product_detail(request, id, slug):
         return redirect('bag:view_bag')
     
     reviews = Review.objects.filter(product=product.id, published=True)
+    user_reviews = reviews.filter(user=request.user) if request.user.is_authenticated else None
     review_count = reviews.count()
     if review_count:
         avg_rating = sum([r.rating + 1 for r in reviews]) / review_count
@@ -77,20 +91,19 @@ def product_detail(request, id, slug):
         '2': reviews.filter(rating=1).count(),
         '1': reviews.filter(rating=0).count(),
     }
-
-    return render(
-        request,
-        'shop/product/detail.html',
-        {'product': product,
-         'variants': variants,
-         'selected_variant': selected_variant,
-         'reviews': reviews,
-         'review_count': review_count,
-         'avg_rating': avg_rating,
-         'review_summary': review_summary,
-         'form': form,
-         }
-    )
+    context = {
+        'product': product,
+        'variants': variants,
+        'selected_variant': selected_variant,
+        'reviews': reviews,
+        'review_count': review_count,
+        'review_form': review_form,
+        'user_reviews': user_reviews,
+        'avg_rating': avg_rating,
+        'review_summary': review_summary,
+        'form': form,
+    }
+    return render(request, 'shop/product/detail.html', context)
 
 
 @staff_member_required
@@ -150,3 +163,32 @@ def delete_product(request, pk):
     return render(
         request, 'shop/product/confirm_delete.html', {'product': product}
     )
+
+
+@login_required
+def edit_review(request, review_id):
+    review = get_object_or_404(Review, pk=review_id, user=request.user)
+    form = ReviewForm(request.POST or None, instance=review)
+    if request.method == 'POST' and form.is_valid():
+        form.save()
+        messages.success(request, 'Review updated.')
+        return redirect('shop:product_detail', id=review.product.id,
+                        slug=review.product.slug)
+    return render(
+        request, 'shop/reviews/edit_review.html', {
+            'form': form, 'review': review
+        }
+    )
+
+
+@login_required
+def delete_review(request, review_id):
+    review = get_object_or_404(Review, pk=review_id, user=request.user)
+    if request.method == 'POST':
+        review.delete()
+        messages.success(request, 'Review removed.')
+        return redirect('shop:product_detail', id=review.product.id,
+                        slug=review.product.slug)
+    return render(request, 'shop/reviews/delete_review.html', {
+        'review': review
+    })

@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
-
+{% load crispy_forms_tags %}
 {% block title %}
     Little'n - {{ product.name }}
 {% endblock %}
@@ -46,48 +46,81 @@
                         <small class="text-muted"><i class="fas fa-tag mr-1"></i>{{ product.category.name }}</small>
                     {% endif %}
                     {% if variants %}
-                        <form method="POST" action="" class="form mt-2">
-                            {% csrf_token %}
-                            <label for="variant">Choose size:</label>
-                            <select name="variant" id="variant-select" required>
-                                {% for variant in variants %}
-                                    <option value="{{ variant.id }}" data-stock="{{ variant.stock }}" data-sku="{{ variant.sku }}" {% if selected_variant and selected_variant.id == variant.id %}selected{% endif %}>{{ variant.size }}</option>
-                                {% endfor %}
-                            </select>
-                            <div id="stock-info" class="mt-2">
-                                <span id="stock-message"></span>
-                            </div>
-                            <div id="qty" class="col-12">
-                                <div class="mb-3 w-50">
-                                    <p class="mt-2">Quantity: </p>
-                                    <div class="input-group input-group-sm">
-                                        <div class="input-group-text">
-                                            <button class="decrement-qty btn btn-sm btn-black rounded-0"
-                                                data-item_id="{{ product.id }}" id="decrement-qty" disabled>
-                                                <span class="icon">
-                                                    <i class="fas fa-minus"></i>
-                                                </span>
-                                            </button>
-                                        </div>
-                                        <input class="form-control form-control-sm qty_input" type="number" name="quantity" value="1"
-                                            min="1" max="99" data-item_id="{{ product.id }}" id="id-qty" disabled>
-                                        <div class="input-group-text">
-                                            <button class="increment-qty btn btn-sm btn-black rounded-0"
-                                                data-item_id="{{ product.id }}" id="increment-qty" disabled>
-                                                <span class="icon">
-                                                    <i class="fas fa-plus"></i>
-                                                </span>
-                                            </button>
-                                        </div>
+                    <form method="POST" action="" class="form mt-2">
+                        {% csrf_token %}
+                        <label for="variant">Choose size:</label>
+                        <select name="variant" id="variant-select" required>
+                            {% for variant in variants %}
+                                <option value="{{ variant.id }}" data-stock="{{ variant.stock }}" data-sku="{{ variant.sku }}" {% if selected_variant and selected_variant.id == variant.id %}selected{% endif %}>{{ variant.size }}</option>
+                            {% endfor %}
+                        </select>
+                        <div id="stock-info" class="mt-2">
+                            <span id="stock-message"></span>
+                        </div>
+                        <div id="qty" class="col-12">
+                            <div class="mb-3 w-50">
+                                <p class="mt-2">Quantity: </p>
+                                <div class="input-group input-group-sm">
+                                    <div class="input-group-text">
+                                        <button class="decrement-qty btn btn-sm btn-black rounded-0"
+                                            data-item_id="{{ product.id }}" id="decrement-qty" disabled>
+                                            <span class="icon">
+                                                <i class="fas fa-minus"></i>
+                                            </span>
+                                        </button>
+                                    </div>
+                                    <input class="form-control form-control-sm qty_input" type="number" name="quantity" value="1"
+                                        min="1" max="99" data-item_id="{{ product.id }}" id="id-qty" disabled>
+                                    <div class="input-group-text">
+                                        <button class="increment-qty btn btn-sm btn-black rounded-0"
+                                            data-item_id="{{ product.id }}" id="increment-qty" disabled>
+                                            <span class="icon">
+                                                <i class="fas fa-plus"></i>
+                                            </span>
+                                        </button>
                                     </div>
                                 </div>
                             </div>
-                            <div class="mt-2">
-                                <input type="submit" id="add-to-bag" class="btn btn-primary mt-2" value="Add to Bag">
-                            </div>
-                            
-                        </form>
+                        </div>
+                        <div class="mt-2">
+                            <input type="submit" id="add-to-bag" class="btn btn-primary mt-2" value="Add to Bag">
+                        </div>
+                    </form>
                     {% endif %}
+                    <div>
+                        {% if request.user.is_authenticated %}
+                        <h5 class="mt-4">Leave a review</h5>
+                        <form method="post">
+                            {% csrf_token %}
+                            {{ review_form|crispy }}
+                            <button class="btn btn-primary mt-2" name="submit_review" type="submit">Submit Review</button>
+                        </form>
+                        {% else %}
+                        <p><a href="{% url 'account_login' %}?next={{ request.path }}">Log in</a> to leave a review.</p>
+                        {% endif %}
+                    </div>
+                    <div>
+                        {% if reviews %}
+                        <h4 class="mt-5">Reviews</h4>
+                        {% for review in reviews %}
+                            <div class="border p-3 my-2">
+                            <strong>{{ review.user.username }}</strong> rated <strong>{{ review.rating|add:"1" }}/5</strong>
+                            <p>{{ review.review|linebreaks }}</p>
+                            <small class="text-muted">Posted {{ review.created|date:"F j, Y" }}</small>
+                            {% if review.updated %}<small class="text-muted">Updated {{ review.updated|date:"F j, Y" }}</small>{% endif %}
+
+                            {% if request.user == review.user %}
+                                <div class="mt-2">
+                                <a href="{% url 'shop:edit_review' review.id %}" class="btn btn-sm btn-warning">Edit</a>
+                                <a href="{% url 'shop:delete_review' review.id %}" class="btn btn-sm btn-danger">Delete</a>
+                                </div>
+                            {% endif %}
+                            </div>
+                        {% endfor %}
+                        {% else %}
+                        <p>No reviews yet. Be the first to leave one!</p>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
         </div>
@@ -110,3 +143,9 @@
     <span>{{ review.comment }}</span>
   </div>
 {% endfor %}
+subject = models.CharField(max_length=200, blank=True, null=True)
+    review = models.TextField(blank=True, null=True)
+    rating = models.IntegerField(choices=RATING, default=4)
+    published = models.BooleanField(default=True)
+    created = models.DateTimeField(auto_now_add=True)
+    updated =
