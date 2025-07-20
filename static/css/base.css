@@ -199,7 +199,13 @@ ul.errorlist {
 }
 
 #navlogo {
-    max-height: 46px;
+    height: 40px !important;
+    max-height: 40px !important;
+    width: auto !important;
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0 !important;
+    padding: 0 !important;
 }
 
 .bag-img {
