@@ -125,9 +125,14 @@ def handle_checkout_session(session):
         profile.save()
 
     # Send confirmation email
-    customer_email_body = render_to_string('emails/confirmation_email_customer.txt',
-                                           {'order': order})
-    internal_order_body = render_to_string('emails/order_email.txt', {'order': order})
+    customer_email_body = render_to_string(
+        'orders/emails/confirmation_email_customer.txt', {'order': order}
+    )
+
+    internal_order_body = render_to_string(
+        'orders/emails/order_email.txt', {'order': order}
+    )
+    
     send_mail(
         subject=f'Your order confirmation #{order.id}',
         message=customer_email_body,
