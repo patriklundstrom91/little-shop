@@ -182,10 +182,6 @@ ul.errorlist {
     max-height: 80px;
 }
 
-.top-m {
-    margin-top: 150px;
-}
-
 .bag-qty {
     vertical-align: middle;
 }
@@ -195,12 +191,18 @@ ul.errorlist {
     display: inline;
 }
 
+.top-m {
+    margin-top: 150px;
+}
+
 .index-header {
     background-color: #77b6e2;
 }
 
 .list-img {
+    aspect-ratio: 3 / 4;
     object-fit: cover;
+    height: auto;
     max-height: 456px;
     width: 100%;
 }

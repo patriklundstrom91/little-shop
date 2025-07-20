@@ -35,23 +35,33 @@
         </div>
         <nav class="navbar navbar-expand-lg bg-body-tertiary">
             <div class="container-fluid">
-                <a class="navbar-brand" href="{% url 'home' %}"><img id="navlogo" src="{% static 'img/logo_small.png' %}" alt="logo"> Little'n</a>
+                <a class="navbar-brand d-flex align-items-center gap-2" href="{% url 'home' %}"><img id="navlogo" src="{% static 'img/logo_small.png' %}" alt="logo"> Little'n</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="{% url 'home' %}">Home</a>
+                            <a class="nav-link active" aria-current="page" href="{% url 'home' %}">
+                                <div class="text-center">
+                                    <span style="display:block;height:24px;"></span>
+                                    <p class="my-0">Home</p>
+                                </div>
+                            </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'shop:product_list' %}">Shop</a>
+                            <a class="nav-link" href="{% url 'shop:product_list' %}">
+                                <div class="text-center">
+                                    <span style="display:block;height:24px;"></span>
+                                    <p class="my-0">Shop</p>
+                                </div>
+                            </a>
                         </li>
                         {% if request.user.is_staff %}
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <div class="text-center">
-                                    <div><i class="fas fa-gears fa-lg"></i></div>
+                                    <i class="fas fa-gears fa-lg"></i>
                                     <p class="my-0">Management</p>
                                 </div>
                             </a>
@@ -64,7 +74,7 @@
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <div class="text-center">
-                                    <div><i class="fas fa-user fa-lg"></i></div>
+                                    <i class="fas fa-user fa-lg"></i>
                                     <p class="my-0">My Account</p>
                                 </div>
                             </a>
@@ -81,7 +91,7 @@
                         <li class="nav-item">
                         <a href="{% url 'bag:view_bag' %}" class="{% if bag_grand_total %}text-info font-weight-bold{% else %}text-black{% endif %} nav-link">
                             <div class="text-center">
-                                <div><i class="fas fa-shopping-bag fa-lg"></i></div>
+                                <i class="fas fa-shopping-bag fa-lg"></i>
                                 <p class="my-0">
                                     {% if bag_grand_total %}
                                         ${{ bag_grand_total|floatformat:2 }}
@@ -132,7 +142,7 @@
         <i class="fas fa-arrow-up"></i>
     </a>
     <footer>
-        
+
     </footer>
     {% block postloadjs %}
     <script>
