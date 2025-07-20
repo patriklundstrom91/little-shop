@@ -86,6 +86,14 @@
                             <input type="submit" id="add-to-bag" class="btn btn-primary mt-2" value="Add to Bag">
                         </div>
                     </form>
+                    <div id="backInStock" class="d-none mt-4">
+                        <form id="backInStockForm" method="POST" action="">
+                            {% csrf_token %}
+                            <p>Get notified when product is back in stock:</p>
+                            <input type="email" name="email" placeholder="Your email" required>
+                            <input type="submit" class="btn btn-secondary" value="Notify Me">
+                        </form>
+                    </div>
                     {% endif %}
                     <div>
                         {% if request.user.is_authenticated %}
@@ -93,7 +101,7 @@
                         <form method="post">
                             {% csrf_token %}
                             {{ review_form|crispy }}
-                            <button class="btn btn-primary mt-2" name="submit_review" type="submit">Submit Review</button>
+                            <input type="submit" class="btn btn-primary mt-2" name="submit_review" value="Submit Review">
                         </form>
                         {% else %}
                         <p><a href="{% url 'account_login' %}?next={{ request.path }}">Log in</a> to leave a review.</p>

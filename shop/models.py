@@ -142,3 +142,11 @@ class PromoCode(models.Model):
     valid_from = models.DateTimeField()
     valid_to = models.DateTimeField()
     active = models.BooleanField(default=True)
+
+
+class BackInStock(models.Model):
+    variant = models.ForeignKey(ProductVariant, on_delete=models.CASCADE)
+    email = models.EmailField(max_length=200, null=False, blank=False)
+    is_sent = models.BooleanField(default=False)
+    created = models.DateTimeField(auto_now_add=True)
+

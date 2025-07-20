@@ -8,10 +8,15 @@ document.addEventListener('DOMContentLoaded', function() {
     const decrementBtn = document.getElementById('decrement-qty');
     const incrementBtn = document.getElementById('increment-qty');
     const qty = document.getElementById('qty');
+    const backInStock = document.getElementById('backInStock');
+    const backInStockForm = document.getElementById('backInStockForm')
 
     function updateControls() {
         const selectedOption = select.options[select.selectedIndex];
         const stock = parseInt(selectedOption.getAttribute('data-stock'), 10);
+        const variantId = select.value;
+        const backInStockURL = "/shop/back-in-stock/" + variantId + "/";
+        backInStockForm.action = backInStockURL;
 
         if (!select.value) {
             qtyInput.disabled = true;
@@ -33,6 +38,7 @@ document.addEventListener('DOMContentLoaded', function() {
             incrementBtn.disabled = (qtyInput.value >= stock);
             qty.className = `col-12 d-block`;
             addToBag.className = `btn btn-primary mt-2`;
+            backInStock.className = `d-none mt-4`;
             qtyInput.value = 1; // Only reset on variant change
         } else { // Disable and remove button if stock is less than 1
             decrementBtn.disabled = true;
@@ -43,6 +49,7 @@ document.addEventListener('DOMContentLoaded', function() {
             addToBag.disabled = true;
             qty.className = `col-12 d-none`;
             addToBag.className = `btn btn-primary mt-2 d-none`;
+            backInStock.className = `mt-4`;
         }
     }
     // Updating if increment and decrement btn should be disabled or not

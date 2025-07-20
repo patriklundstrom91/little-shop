@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Category, Product, ProductVariant, Tag, ProductTag, Review
+from .models import Category, Product, ProductVariant, Tag, ProductTag, Review, BackInStock
 
 # Register your models here.
 
@@ -65,5 +65,15 @@ class ReviewAdmin(admin.ModelAdmin):
         'product',
         'user',
         'rating',
+        'created'
+    ]
+
+
+@admin.register(BackInStock)
+class BackInStockAdmin(admin.ModelAdmin):
+    list_display = [
+        'variant',
+        'email',
+        'is_sent',
         'created'
     ]
