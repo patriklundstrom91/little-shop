@@ -151,9 +151,3 @@
     <span>{{ review.comment }}</span>
   </div>
 {% endfor %}
-subject = models.CharField(max_length=200, blank=True, null=True)
-    review = models.TextField(blank=True, null=True)
-    rating = models.IntegerField(choices=RATING, default=4)
-    published = models.BooleanField(default=True)
-    created = models.DateTimeField(auto_now_add=True)
-    updated =

@@ -30,7 +30,7 @@
     <header class="container-fluid fixed-top">
         <div id="banner" class="row text-center">
             <div class="col bg-black text-white">
-                <p><i class="fa-solid fa-check"></i> Free Delivery over £25   <i class="fa-solid fa-check"></i> Fast   <i class="fa-solid fa-check"></i> Convenient<p>
+                <p><i class="fa-solid fa-check"></i> Free Delivery over £{{ free_delivery_threshold }}   <i class="fa-solid fa-check"></i> Fast   <i class="fa-solid fa-check"></i> Convenient<p>
             </div>
         </div>
         <nav class="navbar navbar-expand-lg bg-body-tertiary">
@@ -128,7 +128,12 @@
         {% endblock %}
     </div>
     
-
+    <a href="#" id="scrollToTopBtn" class="scroll-top-arrow d-none">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+    <footer>
+        
+    </footer>
     {% block postloadjs %}
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -136,8 +141,23 @@
             toasts.forEach(toast => {
                 new bootstrap.Toast(toast, { delay: 4000 }).show();
             });
+
+            const scrollBtn = document.getElementById("scrollToTopBtn");
+
+            window.addEventListener("scroll", function () {
+            if (window.scrollY > 300) {
+                scrollBtn.classList.remove("d-none");
+            } else {
+                scrollBtn.classList.add("d-none");
+            }
+            });
+
+            scrollBtn.addEventListener("click", function (e) {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
         });
-</script>
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous"></script>
     <script src="https://kit.fontawesome.com/ba33d00b7b.js" crossorigin="anonymous"></script>
     {% endblock %}

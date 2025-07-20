@@ -350,3 +350,12 @@ def export_orders_csv(request):
         ])
 
     return response
+
+
+@staff_member_required
+def mark_order_delivered(request, order_id):
+    order = get_object_or_404(Order, id=order_id)
+    if request.method == "POST" and not order.delivered:
+        order.delivered = True
+        order.save()
+    return redirect('orders:order_detail', pk=order.id)

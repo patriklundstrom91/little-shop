@@ -28,6 +28,10 @@
           <span class="badge bg-success">Yes</span>
         {% else %}
           <span class="badge bg-warning text-dark">No</span>
+          <form method="post" action="{% url 'orders:mark_delivered' order.id %}" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-success btn-sm">Mark as Delivered</button>
+          </form>
         {% endif %}
       </p>
     </div>
