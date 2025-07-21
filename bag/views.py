@@ -28,8 +28,9 @@ def update_bag_item(request):
         quantity = min(new_qty, max_qty)
 
         bag_filter = get_bag_filter(request)
-        bag_item = BagItem.objects.filter(variant=variant, **bag_filter).first()
-        
+        bag_item = BagItem.objects.filter(variant=variant,
+                                          **bag_filter).first()
+
         if bag_item:
             if quantity > 0:
                 bag_item.quantity = quantity
@@ -48,4 +49,3 @@ def update_bag_item(request):
             messages.error(request, 'Item not found in your bag')
 
     return redirect('bag:view_bag')
-                

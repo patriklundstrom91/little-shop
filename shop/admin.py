@@ -1,6 +1,6 @@
 from django.contrib import admin
-from .models import Category, Product, ProductVariant, Tag, ProductTag, Review, BackInStock
-
+from .models import Category, Product, ProductVariant, Tag, ProductTag
+from .models import Review, BackInStock
 # Register your models here.
 
 

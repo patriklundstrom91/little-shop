@@ -4,6 +4,7 @@ from django_countries.fields import CountryField
 
 # Create your models here.
 
+
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     full_name = models.CharField(max_length=100, blank=True, null=True)

@@ -7,7 +7,7 @@ class OrderForm(forms.ModelForm):
         model = Order
         fields = ['full_name', 'email', 'phone', 'address', 'city',
                   'postal_code', 'state_province', 'country']
-        
+
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
         super(OrderForm, self).__init__(*args, **kwargs)
@@ -24,4 +24,3 @@ class OrderForm(forms.ModelForm):
             self.fields['save_to_profile'] = forms.BooleanField(
                 required=False, initial=True, label='Save to profile'
             )
-

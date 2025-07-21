@@ -45,7 +45,7 @@ def stripe_webhook(request):
         return HttpResponse(status=400)
     except stripe.error.SignatureVerificationError:
         return HttpResponse(status=400)
-    
+
     # Handle successful stripe checkout payment
     if event['type'] == 'checkout.session.completed':
         session = event['data']['object']
@@ -60,7 +60,7 @@ def handle_checkout_session(session):
     bag_json = metadata.get('bag_data')
     if not bag_json:
         return
-    
+
     bag = json.loads(bag_json)
     user_id = metadata.get('user_id')
     full_name = metadata.get('full_name')
@@ -106,7 +106,7 @@ def handle_checkout_session(session):
         stripe_checkout_session_id=stripe_session_id,
         discount=discount,
     )
-    
+
     # Create OrderItems
     for item in bag:
         variant = ProductVariant.objects.get(id=item['variant_id'])
@@ -116,7 +116,7 @@ def handle_checkout_session(session):
             price=item['unit_price'],
             quantity=item['quantity'],
         )
-    
+
     # Update profile
     if user_id and save_to_profile == 'on':
         profile, _ = UserProfile.objects.get_or_create(user_id=user_id)
@@ -136,7 +136,7 @@ def handle_checkout_session(session):
     internal_order_body = render_to_string(
         'orders/emails/order_email.txt', {'order': order}
     )
-    
+
     send_mail(
         subject=f'Your order confirmation #{order.id}',
         message=customer_email_body,
@@ -181,7 +181,9 @@ def create_checkout_session(request):
     ])
 
     metadata = {
-        'user_id': str(request.user.id) if request.user.is_authenticated else '',
+        'user_id': (
+            str(request.user.id) if request.user.is_authenticated else ''
+        ),
         'bag_data': bag_serialized,
         'save_to_profile': str(save_to_profile).lower(),
         'full_name': data.get('full_name'),
@@ -241,7 +243,9 @@ def checkout_success(request):
     quantities = []
     if session_id:
         for _ in range(5):
-            order = Order.objects.filter(stripe_checkout_session_id=session_id).first()
+            order = Order.objects.filter(
+                stripe_checkout_session_id=session_id
+            ).first()
             if order:
                 break
             sleep(1)
@@ -258,7 +262,7 @@ def checkout_success(request):
         total_amount = session.get('amount_total')
     except Exception as e:
         pass
-    
+
     if metadata and 'bag_data' in metadata:
         try:
             bag_data = json.loads(metadata['bag_data'])
@@ -272,10 +276,10 @@ def checkout_success(request):
             variant = get_object_or_404(ProductVariant, pk=variant_id)
             variant.stock -= quantity
             variant.save()
-            
+
     bag_items = BagItem.objects.filter(**get_bag_filter(request))
     bag_items.delete()
-    
+
     context = {
         'session': session,
         'customer_details': customer_details,
@@ -285,7 +289,7 @@ def checkout_success(request):
         'total_amount': total_amount,
         'order': order,
     }
-    
+
     return render(request, 'orders/success.html', context)
 
 
@@ -343,7 +347,8 @@ def export_orders_csv(request):
     response['Content-Disposition'] = 'attachment; filename="orders.csv"'
 
     writer = csv.writer(response)
-    writer.writerow(['Order ID', 'Customer', 'Email', 'Created Date', 'Delivered', 'Total'])
+    writer.writerow(['Order ID', 'Customer', 'Email', 'Created Date',
+                     'Delivered', 'Total'])
 
     orders = Order.objects.all()
 

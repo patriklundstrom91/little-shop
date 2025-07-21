@@ -3,7 +3,8 @@ from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
-from .models import Category, Product, ProductVariant, Tag, ProductTag, Review, BackInStock
+from .models import Category, Product, ProductVariant, Tag, ProductTag
+from .models import Review, BackInStock
 from .forms import ProductForm, ProductVariantFormSet, ReviewForm
 from bag.forms import AddToBagForm
 from bag.models import BagItem
@@ -59,10 +60,14 @@ def product_detail(request, id, slug):
     if variant_id:
         selected_variant = get_object_or_404(ProductVariant,
                                              pk=variant_id, product=product)
-        
+
     form = AddToBagForm(product=product, data=request.POST or None)
     review_form = ReviewForm()
-    if request.method == 'POST' and 'submit_review' in request.POST and request.user.is_authenticated:
+    if (
+        request.method == 'POST'
+        and 'submit_review' in request.POST
+        and request.user.is_authenticated
+    ):
         review_form = ReviewForm(request.POST)
         if review_form.is_valid():
             review = review_form.save(commit=False)
@@ -71,8 +76,9 @@ def product_detail(request, id, slug):
             review.published = True
             review.save()
             messages.success(request, "Your review was submitted.")
-            return redirect('shop:product_detail', id=product.id, slug=product.slug)
-        
+            return redirect('shop:product_detail', id=product.id,
+                            slug=product.slug)
+
     if request.method == 'POST' and form.is_valid():
         variant = form.cleaned_data['variant']
         quantity = form.cleaned_data['quantity']
@@ -93,9 +99,11 @@ def product_detail(request, id, slug):
             f'{variant.product.name} ({variant.size}) added to your bag.'
         )
         return redirect('bag:view_bag')
-    
+
     reviews = Review.objects.filter(product=product.id, published=True)
-    user_reviews = reviews.filter(user=request.user) if request.user.is_authenticated else None
+    user_reviews = reviews.filter(
+        user=request.user
+    ) if request.user.is_authenticated else None
     review_count = reviews.count()
     if review_count:
         avg_rating = sum([r.rating + 1 for r in reviews]) / review_count
@@ -215,10 +223,16 @@ def back_in_stock(request, variant_id):
     variant = get_object_or_404(ProductVariant, pk=variant_id)
     if request.method == 'POST':
         email = request.POST.get('email')
-        existing = BackInStock.objects.filter(variant=variant, email=email, is_sent=False)
+        existing = BackInStock.objects.filter(variant=variant, email=email,
+                                              is_sent=False)
         if existing.exists():
-            messages.info(request,
-                          'You have already signed up for a restock notification for this product')
+            messages.info(
+                request,
+                (
+                    'You have already signed up for a restock'
+                    'notification for this product'
+                ),
+            )
         else:
             BackInStock.objects.create(variant=variant, email=email)
             messages.success(request,

@@ -28,12 +28,12 @@ class Category(models.Model):
 
     def __str__(self):
         return self.name
-    
+
     def get_absolute_url(self):
         return reverse(
             'shop:product_list_by_category', args=[self.slug]
         )
-    
+
 
 class Product(models.Model):
     category = models.ForeignKey(
@@ -65,7 +65,7 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
-    
+
     def save(self, *args, **kwargs):
         if not self.slug:
             new_slug = slugify(self.name)
@@ -75,7 +75,7 @@ class Product(models.Model):
                 count += 1
             self.slug = new_slug
         super().save(*args, **kwargs)
-    
+
     def get_absolute_url(self):
         return reverse('shop:product_detail', args=[self.id, self.slug])
 
@@ -90,7 +90,7 @@ class ProductVariant(models.Model):
 
     class Meta:
         ordering = ['id']
-    
+
     def __str__(self):
         return f'{self.product.name} - {self.size}'
 

@@ -40,7 +40,7 @@ class Order(models.Model):
 
     def __str__(self):
         return f'Order #{self.id} - {self.full_name}'
-    
+
 
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, related_name='items', null=False,
@@ -54,7 +54,6 @@ class OrderItem(models.Model):
         if not self.sku:
             self.sku = self.variant.sku
         super().save(*args, **kwargs)
-        
+
     def total_price(self):
         return self.price * self.quantity
-

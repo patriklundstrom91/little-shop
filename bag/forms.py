@@ -10,7 +10,9 @@ class AddToBagForm(forms.Form):
         product = kwargs.pop('product', None)
         super().__init__(*args, **kwargs)
         if product:
-            self.fields['variant'].queryset = product.variants.filter(active=True)
+            self.fields['variant'].queryset = product.variants.filter(
+                active=True
+            )
 
     def clean_quantity(self):
         quantity = self.cleaned_data['quantity']
@@ -20,4 +22,3 @@ class AddToBagForm(forms.Form):
                 f'Only {variant.stock} items available in stock.'
             )
         return quantity
-
