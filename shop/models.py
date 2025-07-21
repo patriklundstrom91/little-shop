@@ -127,23 +127,6 @@ class Review(models.Model):
         return f'{self.product.name} - {self.user.username}'
 
 
-class PromoCode(models.Model):
-    PERCENT = 'percent'
-    FIXED = 'fixed'
-    DISCOUNT_TYPE_CHOICES = [
-        (PERCENT, 'Percent'),
-        (FIXED, 'Fixed'),
-    ]
-    code = models.CharField(max_length=30, unique=True)
-    description = models.TextField(blank=True)
-    discount_type = models.CharField(max_length=10, choices=DISCOUNT_TYPE_CHOICES)
-    discount_value = models.DecimalField(max_digits=10, decimal_places=2)
-    usage_limit = models.IntegerField(null=True, blank=True)
-    valid_from = models.DateTimeField()
-    valid_to = models.DateTimeField()
-    active = models.BooleanField(default=True)
-
-
 class BackInStock(models.Model):
     variant = models.ForeignKey(ProductVariant, on_delete=models.CASCADE)
     email = models.EmailField(max_length=200, null=False, blank=False)

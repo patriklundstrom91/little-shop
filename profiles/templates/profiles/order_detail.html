@@ -45,6 +45,7 @@
     </table>
 
     <p>Delivery Cost: £{{ order.delivery_cost|floatformat:2 }}</p>
+    {% if order.discount %}<p>Discount: £{{ order.discount|floatformat:2 }}</p>{% endif %}
     <p><strong>Grand Total: £{{ order.grand_total|floatformat:2 }}</strong></p>
 
     <div class="mt-4">

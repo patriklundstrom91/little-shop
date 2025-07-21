@@ -11,6 +11,7 @@ Items:
 
 Subtotal: £{{ order.order_total|floatformat:2 }}
 Delivery: £{{ order.delivery_cost|floatformat:2 }}
+{% if order.discount %}Discount: £{{ order.discount|floatformat:2 }}{% endif %}
 Grand Total: £{{ order.grand_total|floatformat:2 }}
 
 Address:

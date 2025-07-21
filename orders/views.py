@@ -56,7 +56,7 @@ def stripe_webhook(request):
 
 def handle_checkout_session(session):
     metadata = session.get('metadata', {})
-
+    total_details = session.get('total_details', {})
     bag_json = metadata.get('bag_data')
     if not bag_json:
         return
@@ -74,6 +74,7 @@ def handle_checkout_session(session):
     grand_total = int(session.get('amount_total', 0)) / 100
     payment_intent = session.get('payment_intent')
     stripe_session_id = session.get('id')
+    discount = int(total_details.get('amount_discount')) / 100
 
     # Check and avoid duplicate Order creation
     if Order.objects.filter(stripe_payment_intent_id=payment_intent).exists():
@@ -102,6 +103,7 @@ def handle_checkout_session(session):
         paid=True,
         stripe_payment_intent_id=payment_intent,
         stripe_checkout_session_id=stripe_session_id,
+        discount=discount,
     )
     
     # Create OrderItems
@@ -215,6 +217,7 @@ def create_checkout_session(request):
         mode='payment',
         line_items=line_items,
         metadata=metadata,
+        allow_promotion_codes=True,
         success_url=settings.CHECKOUT_SUCCESS_URL,
         cancel_url=settings.CHECKOUT_CANCEL_URL,
     )
@@ -247,6 +250,7 @@ def checkout_success(request):
         session = stripe.checkout.Session.retrieve(session_id)
         customer_details = session.customer_details
         metadata = session.metadata
+        total_details = session.total_details
         line_items = stripe.checkout.Session.list_line_items(session_id)
         total_amount = session.get('amount_total')
     except Exception as e:
@@ -273,6 +277,7 @@ def checkout_success(request):
         'session': session,
         'customer_details': customer_details,
         'metadata': metadata,
+        'total_details': total_details,
         'line_items': line_items.data if line_items else [],
         'total_amount': total_amount,
         'order': order,

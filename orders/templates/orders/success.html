@@ -18,6 +18,7 @@
         {% endfor %}
         </ul>
         <p>Delivery cost: £{{ order.delivery_cost }}</p>
+        {% if order.discount %}<p>Discount: £{{ order.discount|floatformat:2 }}</p>{% endif %}
         <p>Total: £{{ order.grand_total|floatformat:2 }}</p>
         <div class="mt-4">
             <a href="{% url 'home' %}" class="btn btn-primary me-2">Back to Home</a>

@@ -12,11 +12,8 @@
           <form method="POST" action="{% url 'orders:create_checkout_session' %}">
               {% csrf_token %}
               {{ form|crispy }}
-
-              <!-- Promo Code -->
               <div class="mb-3">
-                <label for="promo_code" class="form-label">Promo Code</label>
-                <input type="text" class="form-control" id="promo_code" name="promo_code" placeholder="Enter promo code">
+                <span>If you have a promo code, apply it on payment page</span>
               </div>
               <button type="submit" class="btn btn-primary w-100">Proceed to Secure Payment</button>
           </form>

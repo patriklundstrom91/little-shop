@@ -32,6 +32,8 @@ class Order(models.Model):
     stripe_payment_intent_id = models.CharField(max_length=255, blank=True)
     stripe_checkout_session_id = models.CharField(max_length=255, blank=True,
                                                   null=True, unique=True)
+    discount = models.DecimalField(max_digits=10, decimal_places=2, null=True,
+                                   blank=True)
 
     class Meta:
         ordering = ['-created']
