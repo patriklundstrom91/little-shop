@@ -32,7 +32,7 @@ class ReviewForm(forms.ModelForm):
     """ Form to write reviews as shopper """
     class Meta:
         model = Review
-        fields = ['subject', 'review', 'rating']
+        fields = ['review', 'rating']
         widgets = {
             'subject': forms.TextInput(attrs={'class': 'form-control'}),
             'review': forms.Textarea(attrs={'class':
