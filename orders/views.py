@@ -70,7 +70,7 @@ def handle_checkout_session(session):
     postal_code = metadata.get('postal_code')
     state_province = metadata.get('state_province')
     country = metadata.get('country')
-    save_to_profile = metadata.get('save_to_profile') == 'true'
+    save_to_profile = metadata.get('save_to_profile')
     grand_total = int(session.get('amount_total', 0)) / 100
     payment_intent = session.get('payment_intent')
     stripe_session_id = session.get('id')
@@ -117,7 +117,7 @@ def handle_checkout_session(session):
         )
     
     # Update profile
-    if user_id and save_to_profile:
+    if user_id and save_to_profile == 'on':
         profile, _ = UserProfile.objects.get_or_create(user_id=user_id)
         profile.full_name = full_name
         profile.email = email
@@ -152,7 +152,7 @@ def handle_checkout_session(session):
 @require_POST
 def create_checkout_session(request):
     data = request.POST
-    save_to_profile = data.get('save_to_profile', 'true') == 'true'
+    save_to_profile = data.get('save_to_profile')
     stripe.api_key = settings.STRIPE_SECRET_KEY
 
     bag_items = BagItem.objects.filter(**get_bag_filter(request))

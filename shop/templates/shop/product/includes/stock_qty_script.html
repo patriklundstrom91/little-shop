@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', function() {
         qtyInput.max = stock;
         addToBag.disabled = false;
 
-        if (stock > 0) {
+        if (stock > 0) { // Make sure buttons are reactivated when stock over 0
             stockMessage.textContent = `In stock: ${stock}`;
             stockMessage.className = `text-black`;
             decrementBtn.disabled = (qtyInput.value <= 1);
@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function() {
             qty.className = `col-12 d-block`;
             addToBag.className = `btn btn-primary mt-2 w-100`;
             backInStock.className = `d-none mt-4`;
-            qtyInput.value = 1; // Only reset on variant change
+            qtyInput.value = 1;
         } else { // Disable and remove button if stock is less than 1
             decrementBtn.disabled = true;
             incrementBtn.disabled = true;
