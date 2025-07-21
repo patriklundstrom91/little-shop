@@ -207,7 +207,6 @@ ul.errorlist {
     display: block;
     margin-left: auto;
     margin-right: auto;
-    ma object-fit: contain;
 }
 
 #index-image {
@@ -432,16 +431,4 @@ ul.errorlist {
 
 .scroll-top-arrow i {
     color: white;
-}
-
-
-/* Specific adjustments for smaller screens, mobile and tablet */
-
-@media (max-width: 991px) {
-    .header-container {
-        padding-top: 116px;
-    }
-    body {
-        height: calc(100vh - 116px);
-    }
 }

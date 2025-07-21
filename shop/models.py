@@ -132,4 +132,3 @@ class BackInStock(models.Model):
     email = models.EmailField(max_length=200, null=False, blank=False)
     is_sent = models.BooleanField(default=False)
     created = models.DateTimeField(auto_now_add=True)
-

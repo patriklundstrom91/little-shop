@@ -15,4 +15,3 @@ class BagItem(models.Model):
     class Meta:
         unique_together = ('user', 'session_key', 'variant')
 
-
