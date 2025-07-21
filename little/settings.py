@@ -136,9 +136,9 @@ else:
     EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
     EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASS')
     DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL')
+    CHECKOUT_SUCCESS_URL = 'https://little-shop-e7360dae3788.herokuapp.com/orders/success/?session_id={CHECKOUT_SESSION_ID}'
+    CHECKOUT_CANCEL_URL = 'https://little-shop-e7360dae3788.herokuapp.com/orders/cancel/'
 
-CHECKOUT_SUCCESS_URL = 'https://little-shop-e7360dae3788.herokuapp.com/orders/success/?session_id={CHECKOUT_SESSION_ID}'
-CHECKOUT_CANCEL_URL = 'https://little-shop-e7360dae3788.herokuapp.com/orders/cancel/'
 
 WSGI_APPLICATION = 'little.wsgi.application'
 
@@ -194,10 +194,10 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 if 'USE_AWS' in os.environ:
     # Cache control
-    AWS_S3_OBJECT_PARAMETERS = {
-        'Expires': 'Thu, 31 Dec 2099 20:00:00 GMT',
-        'CacheControl': 'max-age=94608000',
-    }
+    # AWS_S3_OBJECT_PARAMETERS = {
+    #    'Expires': 'Thu, 31 Dec 2099 20:00:00 GMT',
+    #    'CacheControl': 'max-age=94608000',
+    # }
 
     # Bucket Config
     AWS_STORAGE_BUCKET_NAME = 'little-shop'
