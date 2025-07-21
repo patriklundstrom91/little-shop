@@ -87,6 +87,9 @@ class ProductVariant(models.Model):
     sku = models.CharField(max_length=200, unique=True)
     stock = models.IntegerField(default=0)
     active = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ['id']
     
     def __str__(self):
         return f'{self.product.name} - {self.size}'

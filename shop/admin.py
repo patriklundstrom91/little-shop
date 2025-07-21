@@ -34,6 +34,7 @@ class ProductAdmin(admin.ModelAdmin):
 @admin.register(ProductVariant)
 class ProductVariantAdmin(admin.ModelAdmin):
     list_display = [
+        'id',
         'product',
         'size',
         'sku',

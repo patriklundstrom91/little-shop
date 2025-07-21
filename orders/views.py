@@ -65,6 +65,7 @@ def handle_checkout_session(session):
     user_id = metadata.get('user_id')
     full_name = metadata.get('full_name')
     email = metadata.get('email')
+    phone = metadata.get('phone')
     address = metadata.get('address')
     city = metadata.get('city')
     postal_code = metadata.get('postal_code')
@@ -121,6 +122,7 @@ def handle_checkout_session(session):
         profile, _ = UserProfile.objects.get_or_create(user_id=user_id)
         profile.full_name = full_name
         profile.email = email
+        profile.phone = phone
         profile.address = address
         profile.city = city
         profile.postal_code = postal_code
@@ -184,6 +186,7 @@ def create_checkout_session(request):
         'save_to_profile': str(save_to_profile).lower(),
         'full_name': data.get('full_name'),
         'email': data.get('email'),
+        'phone': data.get('phone'),
         'address': data.get('address'),
         'city': data.get('city'),
         'postal_code': data.get('postal_code'),

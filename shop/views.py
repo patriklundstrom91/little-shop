@@ -31,6 +31,7 @@ def product_list(request, category_slug=None):
         }
     )
 
+
 def product_search(request):
     """ Product search """
     query = request.GET.get('search', '')
@@ -45,6 +46,7 @@ def product_search(request):
         'categories': Category.objects.all(),
     }
     return render(request, 'shop/product/list.html', context)
+
 
 def product_detail(request, id, slug):
     """ Product detail, add to bag and product rating/review view"""
