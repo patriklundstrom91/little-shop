@@ -1,8 +1,18 @@
-@import url(//fonts.googleapis.com/css?family=Ubuntu);
+@import url('https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Jost:ital,wght@0,100..900;1,100..900&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Lobster&family=Macondo&family=Oswald:wght@200..700&family=Quicksand:wght@300..700&display=swap');
+
+/* Global var */
+
+:root {
+    --primary-font: "Quicksand", sans-serif;
+    --secondary-font: "Open Sans", sans-serif;
+    --primary-color-dark: #008080;
+    --primary-color-bright: #FFFFF0;
+}
+
 body {
     margin: 0;
     padding: 0;
-    font-family: helvetica, sans-serif;
+    font-family: 'Quicksand', sans-serif;
 }
 
 h1,
@@ -11,8 +21,7 @@ h3,
 h4,
 h5,
 h6 {
-    font-family: 'Ubuntu', sans-serif;
-    font-weight: normal;
+    font-family:
 }
 
 a {
@@ -177,6 +186,24 @@ ul.errorlist {
     padding: 0 !important;
 }
 
+#index-logo {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#index-image {
+    background-image: url(/media/babyclothesonrack.jpg);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    margin: 0;
+    padding-top: 0;
+}
+
 .bag-img {
     max-width: 80px;
     max-height: 80px;
@@ -193,10 +220,19 @@ ul.errorlist {
 
 .top-m {
     margin-top: 150px;
+    width: 100%;
 }
 
 .index-header {
-    background-color: #77b6e2;
+    background-color: var(--primary-color-dark);
+    color: var(--primary-color-bright);
+    margin-top: 24px;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.index-header h1 {
+    margin-bottom: 0;
 }
 
 .list-img {

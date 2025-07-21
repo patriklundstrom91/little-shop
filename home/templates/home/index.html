@@ -2,10 +2,16 @@
 {% load static %}
 
 {% block page_header %}
-    <div class="col index-header top-m">
-        <h1>Welcome to Little'n, the genuin option from north England crossed with Swedish design and quality.</h1>
-    </div>
 {% endblock %}
 
 {% block content %}
+<div>
+    <img id="index-logo" src="{% static 'img/logo.png' %}" alt="Little'n logo">
+</div>
+<div class="col index-header">
+    <h1>Welcome to Little'n, the genuin option from north England crossed with Swedish design and quality.</h1>
+</div>
+<div id="index-image" class="col index-img">
+    
+</div>
 {% endblock %}

@@ -65,7 +65,7 @@
                                     <p class="my-0">Management</p>
                                 </div>
                             </a>
-                            <ul class="dropdown-menu">
+                            <ul class="dropdown-menu text-center text-lg-start">
                                     <li><a href="{% url 'shop:add_product' %}" class="dropdown-item">Add Product</a></li>
                                     <li><a href="{% url 'orders:order_list' %}" class="dropdown-item">Orders</a></li>
                             </ul>
@@ -78,7 +78,7 @@
                                     <p class="my-0">My Account</p>
                                 </div>
                             </a>
-                            <ul class="dropdown-menu">
+                            <ul class="dropdown-menu text-center text-lg-start">
                                 {% if request.user.is_authenticated %}
                                     <li><a href="{% url 'profiles:view_profile' %}" class="dropdown-item">My Profile</a></li>
                                     <li><a href="{% url 'account_logout' %}" class="dropdown-item">Logout</a></li>

@@ -82,10 +82,13 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="mt-2">
-                            <input type="submit" id="add-to-bag" class="btn btn-primary mt-2" value="Add to Bag">
+                        <div class="mt-2 w-100">
+                            <input type="submit" id="add-to-bag" class="btn btn-primary btn-lg mt-2" value="Add to Bag">
                         </div>
                     </form>
+                    <a href="{% url 'shop:product_list' %}" class="btn btn-secondary mt-4 w-100">
+                        <span class="icon"><i class="fas fa-chevron-left"></i></span><span class="btn-text">Continue Shopping</span>
+                    </a>
                     <div id="backInStock" class="d-none mt-4">
                         <form id="backInStockForm" method="POST" action="">
                             {% csrf_token %}
@@ -101,7 +104,7 @@
                         <form method="post">
                             {% csrf_token %}
                             {{ review_form|crispy }}
-                            <input type="submit" class="btn btn-primary mt-2" name="submit_review" value="Submit Review">
+                            <input type="submit" class="btn btn-primary mt-2 w-100" name="submit_review" value="Submit Review">
                         </form>
                         {% else %}
                         <p><a href="{% url 'account_login' %}?next={{ request.path }}">Log in</a> to leave a review.</p>
