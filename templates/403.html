@@ -1,0 +1,6 @@
+{% extends 'base.html' %} {% block title %}403 - Little'n{% endblock %} {% block content %}
+<div class="container text-center">
+    <h1>Ooops.. 403 - Unauthorized Access <i class="fa-solid fa-user-slash"></i></h1>
+    <p>Back to <a href="{% url 'home' %}">Home</a></p>
+</div>
+{% endblock %}
