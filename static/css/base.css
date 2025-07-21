@@ -207,7 +207,7 @@ ul.errorlist {
     display: block;
     margin-left: auto;
     margin-right: auto;
-    object-fit: contain;
+    ma object-fit: contain;
 }
 
 #index-image {
@@ -290,6 +290,30 @@ ul.errorlist {
 .bag-stock {
     font-size: 13px;
     display: inline;
+}
+
+.btn-primary {
+    background-color: var(--primary-color-dark);
+    border-color: var(--primary-color-dark);
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-color-grey);
+    border-color: var(--primary-color-grey);
+    color: white;
+}
+
+.btn-outline-primary {
+    background-color: white;
+    border-color: var(--primary-color-dark);
+    color: var(--primary-color-dark);
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--primary-color-dark);
+    border-color: var(--primary-color-dark);
+    color: white;
 }
 
 .top-m {
