@@ -244,7 +244,7 @@ def checkout_success(request):
     variant_ids = []
     quantities = []
     if session_id:
-        for _ in range(6):
+        for _ in range(10):
             order = Order.objects.filter(
                 stripe_checkout_session_id=session_id
             ).first()
@@ -292,8 +292,10 @@ def checkout_success(request):
             variant.stock -= quantity
             variant.save()
 
-    bag_items = BagItem.objects.filter(**get_bag_filter(request))
-    bag_items.delete()
+    try:
+        BagItem.objects.filter(**get_bag_filter(request)).delete()
+    except Exception as e:
+        print("Failed to clear bag: ", e)
 
     context = {
         'session': session,
