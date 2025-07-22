@@ -126,6 +126,8 @@ def handle_checkout_session(session):
         profile.address = address
         profile.city = city
         profile.postal_code = postal_code
+        profile.state_province = state_province
+        profile.country = country
         profile.save()
 
     # Send confirmation email
@@ -242,13 +244,22 @@ def checkout_success(request):
     variant_ids = []
     quantities = []
     if session_id:
-        for _ in range(5):
+        for _ in range(6):
             order = Order.objects.filter(
                 stripe_checkout_session_id=session_id
             ).first()
             if order:
                 break
             sleep(1)
+        if not order:
+            messages.error(
+                request,
+                (
+                    'Your order is still processing.'
+                    'Please refresh this page in a few seconds.'
+                ),
+            )
+            return render(request, 'orders/processing.html')
 
     if not session_id:
         return redirect('home')
@@ -261,7 +272,11 @@ def checkout_success(request):
         line_items = stripe.checkout.Session.list_line_items(session_id)
         total_amount = session.get('amount_total')
     except Exception as e:
-        pass
+        session = None
+        customer_details = None
+        metadata = {}
+        line_items = []
+        total_amount = None
 
     if metadata and 'bag_data' in metadata:
         try:
