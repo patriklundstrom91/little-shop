@@ -46,10 +46,10 @@
                         <small class="text-muted"><i class="fas fa-tag mr-1"></i>{{ product.category.name }}</small>
                     {% endif %}
                     {% if variants %}
-                    <form method="POST" action="" class="form mt-2">
+                    <form method="POST" action="." class="form mt-2">
                         {% csrf_token %}
-                        <label for="variant">Choose size:</label>
-                        <select name="variant" id="variant-select" required>
+                        <label for="variant-select">Choose size:</label>
+                        <select name="variant" id="variant-select">
                             {% for variant in variants %}
                                 <option value="{{ variant.id }}" data-stock="{{ variant.stock }}" data-sku="{{ variant.sku }}" {% if selected_variant and selected_variant.id == variant.id %}selected{% endif %}>{{ variant.size }}</option>
                             {% endfor %}
@@ -90,7 +90,7 @@
                         <span class="icon"><i class="fas fa-chevron-left"></i></span><span class="btn-text">Continue Shopping</span>
                     </a>
                     <div id="backInStock" class="d-none mt-4">
-                        <form id="backInStockForm" method="POST" action="">
+                        <form id="backInStockForm" method="POST" action=".">
                             {% csrf_token %}
                             <p>Get notified when product is back in stock:</p>
                             <input type="email" name="email" placeholder="Your email" required>
@@ -116,7 +116,7 @@
                         {% for review in reviews %}
                             <div class="border p-3 my-2">
                             <strong>{{ review.user.username }}</strong> rated <strong>{{ review.rating|add:"1" }}/5</strong>
-                            <p>{{ review.review|linebreaks }}</p>
+                            {{ review.review|linebreaks }}
                             <small class="text-muted">Posted {{ review.created|date:"F j, Y" }}</small>
                             {% if review.updated %}<small class="text-muted">Updated {{ review.updated|date:"F j, Y" }}</small>{% endif %}
 
