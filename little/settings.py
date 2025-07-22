@@ -126,8 +126,10 @@ LOGIN_REDIRECT_URL = '/'
 if 'DEVELOPMENT' in os.environ:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
     DEFAULT_FROM_EMAIL = 'littlen@example.com'
-    CHECKOUT_SUCCESS_URL = 'http://127.0.0.1:8000/orders/success/?session_id={CHECKOUT_SESSION_ID}'
-    CHECKOUT_CANCEL_URL = 'http://127.0.0.1:8000/orders/cancel/'
+    CHECKOUT_SUCCESS_URL = 'https://little-shop-e7360dae3788.herokuapp.com/orders/success/?session_id={CHECKOUT_SESSION_ID}'
+    CHECKOUT_CANCEL_URL = 'https://little-shop-e7360dae3788.herokuapp.com/orders/cancel/'
+    # CHECKOUT_SUCCESS_URL = 'http://127.0.0.1:8000/orders/success/?session_id={CHECKOUT_SESSION_ID}'
+    # CHECKOUT_CANCEL_URL = 'http://127.0.0.1:8000/orders/cancel/'
 else:
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
     EMAIL_USE_TLS = True
